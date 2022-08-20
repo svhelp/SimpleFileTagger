@@ -11,21 +11,21 @@ namespace SimpleFileTagger.Processors
 {
     internal class TagsWriter : ProcessorBase
     {
-        static public void SetDirectoryInfo(string path, List<string> tags)
+        static public void SetDirectoryInfo(string path, IEnumerable<string> tags)
         {
             var convertedTags = tags.Select(t => new TagModel { Name = t }).ToList();
 
             SetDirectoryInfo(path, convertedTags);
         }
 
-        static public void AddDirectoryInfo(string path, List<string> tags)
+        static public void AddDirectoryInfo(string path, IEnumerable<string> tags)
         {
             var convertedTags = tags.Select(t => new TagModel { Name = t }).ToList();
 
             AddDirectoryInfo(path, convertedTags);
         }
 
-        static public void RemoveDirectoryInfo(string path, List<string> tags)
+        static public void RemoveDirectoryInfo(string path, IEnumerable<string> tags)
         {
             var convertedTags = tags.Select(t => new TagModel { Name = t }).ToList();
 
