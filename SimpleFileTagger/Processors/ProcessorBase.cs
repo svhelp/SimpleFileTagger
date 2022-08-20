@@ -8,6 +8,11 @@ namespace SimpleFileTagger.Processors
 {
     internal class ProcessorBase
     {
-        internal const string DefaultFileName = ".sft";
+        private const string DefaultFileName = ".sft";
+
+        protected static string GetDataFilePath(string directoryPath)
+        {
+            return Path.Combine(directoryPath, DefaultFileName);
+        }
     }
 }

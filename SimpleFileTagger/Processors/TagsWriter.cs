@@ -1,6 +1,7 @@
 ﻿using SimpleFileTagger.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -33,62 +34,46 @@ namespace SimpleFileTagger.Processors
 
         static private void SetDirectoryInfo(string path, List<TagModel> tags)
         {
-            var filePath = path + DefaultFileName;
-
-            if (!File.Exists(filePath))
-            {
-                File.Create(filePath);
-            }
-
-            var newData = new TaggerDirectoryInfo
+            ProcessDirectoryInfo(path, (currentTags) => new TaggerDirectoryInfo
             {
                 Tags = tags
-            };
-
-            var newFileData = JsonSerializer.Serialize(newData);
-
-            File.WriteAllText(filePath, newFileData);
+            });
         }
 
         static private void AddDirectoryInfo(string path, List<TagModel> tags)
         {
-            var filePath = path + DefaultFileName;
-            var currentTags = new TaggerDirectoryInfo();
-
-            if (!File.Exists(filePath))
-            {
-                File.Create(filePath);
-            }
-            else
-            {
-                var fileData = File.ReadAllText(filePath);
-                currentTags = JsonSerializer.Deserialize<TaggerDirectoryInfo>(fileData);
-            }
-
-            currentTags.Tags.AddRange(tags);
-
-            var newFileData = JsonSerializer.Serialize(currentTags);
-
-            File.WriteAllText(filePath, newFileData);
+            ProcessDirectoryInfo(path, (currentTags) => new TaggerDirectoryInfo {
+                Tags = currentTags.Tags.Concat(tags).ToList()
+            });
         }
 
         static private void RemoveDirectoryInfo(string path, List<TagModel> tags)
         {
-            var filePath = path + DefaultFileName;
-
-            if (!File.Exists(filePath))
+            ProcessDirectoryInfo(path, (currentTags) => new TaggerDirectoryInfo
             {
-                return;
-            }
+                Tags = currentTags.Tags.Where(currentTag => !tags.Any(t => t.Name == currentTag.Name)).ToList()
+            });
+        }
 
-            var fileData = File.ReadAllText(filePath);
-            var currentTags = JsonSerializer.Deserialize<TaggerDirectoryInfo>(fileData);
+        private static void ProcessDirectoryInfo(string path, Func<TaggerDirectoryInfo, TaggerDirectoryInfo> processor)
+        {
+            var filePath = GetDataFilePath(path);
 
-            currentTags.Tags = currentTags.Tags.Where(currentTag => !tags.Any(t => t.Name == currentTag.Name)).ToList();
+            using FileStream stream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
 
-            var newFileData = JsonSerializer.Serialize(currentTags);
+            using var streamReader = new StreamReader(stream);
+            var fileData = streamReader.ReadToEnd();
+            var currentTags = fileData == string.Empty
+                ? new TaggerDirectoryInfo()
+                : JsonSerializer.Deserialize<TaggerDirectoryInfo>(fileData);
 
-            File.WriteAllText(filePath, newFileData);
+            var updatedData = processor(currentTags);
+
+            var newFileData = JsonSerializer.Serialize(updatedData);
+
+            stream.SetLength(0);
+            using var streamWriter = new StreamWriter(stream);
+            streamWriter.WriteLine(newFileData);
         }
     }
 }

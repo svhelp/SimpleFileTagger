@@ -13,7 +13,7 @@ namespace SimpleFileTagger.Processors
     {
         static public TaggerDirectoryInfo GetDirectoryInfo(string path)
         {
-            var filePath = path + DefaultFileName;
+            var filePath = GetDataFilePath(path);
 
             if (!File.Exists(filePath))
             {

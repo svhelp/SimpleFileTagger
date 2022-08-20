@@ -6,7 +6,7 @@ namespace SimpleFileTagger
     internal class Program
     {
         private static readonly string QuitCommandText = "q";
-        private static readonly Regex CommandParser = new Regex("(\".+\") -(r|a|s|d) (/w+/s)*");
+        private static readonly Regex CommandParser = new Regex("^\"(.+)\" -(r|a|s|d) (.*)$");
 
         static void Main(string[] args)
         {
@@ -25,7 +25,7 @@ namespace SimpleFileTagger
 
                 var path = action.Groups[1].Value;
                 var commandType = action.Groups[2].Value;
-                var arguments = action.Groups.Cast<Group>().Skip(3).Select(a => a.Value).ToList();
+                var arguments = action.Groups[3].Value.Split().ToList();
 
                 switch (commandType)
                 {
