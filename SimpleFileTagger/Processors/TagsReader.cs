@@ -11,7 +11,34 @@ namespace SimpleFileTagger.Processors
 {
     internal class TagsReader : ProcessorBase
     {
+        static public Dictionary<string, TaggerDirectoryInfo> GetDirectoryInfoRecoursively(string path)
+        {
+            Dictionary<string, TaggerDirectoryInfo> result = new Dictionary<string, TaggerDirectoryInfo>();
+
+            getDirectoryInfoRecoursively(path, result);
+
+            return result;
+        }
+
         static public TaggerDirectoryInfo GetDirectoryInfo(string path)
+        {
+            return getDirectoryInfo(path);
+        }
+
+        private static void getDirectoryInfoRecoursively(string path, Dictionary<string, TaggerDirectoryInfo> result)
+        {
+            var directoryInfo = getDirectoryInfo(path);
+            result.Add(path, directoryInfo);
+
+            var innerDirectories = Directory.GetDirectories(path);
+
+            foreach(var subdir in innerDirectories)
+            {
+                getDirectoryInfoRecoursively(subdir, result);
+            }
+        }
+
+        private static TaggerDirectoryInfo getDirectoryInfo(string path)
         {
             var filePath = GetDataFilePath(path);
 

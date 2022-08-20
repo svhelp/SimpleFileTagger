@@ -1,4 +1,5 @@
-﻿using SimpleFileTagger.Processors;
+﻿using SimpleFileTagger.Models;
+using SimpleFileTagger.Processors;
 using System.Text.RegularExpressions;
 
 namespace SimpleFileTagger
@@ -6,7 +7,7 @@ namespace SimpleFileTagger
     internal class Program
     {
         private static readonly string QuitCommandText = "q";
-        private static readonly Regex CommandParser = new Regex("^\"(.+)\" -(r|a|s|d) (.*)$");
+        private static readonly Regex CommandParser = new Regex("^\"(.+)\" -(r|a|s|d|rr)( (.*))?$");
 
         static void Main(string[] args)
         {
@@ -25,13 +26,18 @@ namespace SimpleFileTagger
 
                 var path = action.Groups[1].Value;
                 var commandType = action.Groups[2].Value;
-                var arguments = action.Groups[3].Value.Split().ToList();
+                var arguments = action.Groups[4].Value.Split().ToList();
 
                 switch (commandType)
                 {
                     case "r":
                         {
                             PrintDirectoryInfo(path);
+                            break;
+                        }
+                    case "rr":
+                        {
+                            PrintDirectoryInfoRecursively(path);
                             break;
                         }
                     case "a":
@@ -55,15 +61,30 @@ namespace SimpleFileTagger
                 }
             }
         }
+        private static void PrintDirectoryInfoRecursively(string path)
+        {
+            var data = TagsReader.GetDirectoryInfoRecoursively(path);
+
+            foreach (var dir in data.Keys)
+            {
+                Console.WriteLine(dir);
+                PrintDirectoryInfo(data[dir]);
+            }
+        }
 
         private static void PrintDirectoryInfo(string path)
         {
             var data = TagsReader.GetDirectoryInfo(path);
+            PrintDirectoryInfo(data);
+        }
 
-            foreach(var tag in data.Tags)
+        private static void PrintDirectoryInfo(TaggerDirectoryInfo dirInfo)
+        {
+            foreach (var tag in dirInfo.Tags)
             {
                 Console.WriteLine(tag.Name);
             }
         }
     }
+
 }
