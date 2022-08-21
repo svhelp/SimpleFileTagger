@@ -28,7 +28,7 @@ namespace SimpleFileTagger
                     }
                 case "twostep":
                     {
-                        new SingleCommandWorkflow().Run(args);
+                        new TwoStepWorkflow().Run(args);
                         break;
                     }
                 default:
