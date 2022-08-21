@@ -10,14 +10,33 @@ namespace SimpleFileTagger
     {
         static void Main(string[] args)
         {
-            if (args.Any())
+            if (!args.Any())
             {
-                new SingleCommandWorkflow().Run(args);
+                var workflow = new PersistentWorkflow();
+                workflow.Run();
                 return;
             }
 
-            var workflow = new PersistentWorkflow();
-            workflow.Run();
+            var mode = args[0];
+
+            switch (mode)
+            {
+                case "onestep":
+                    {
+                        new SingleCommandWorkflow().Run(args);
+                        break;
+                    }
+                case "twostep":
+                    {
+                        new SingleCommandWorkflow().Run(args);
+                        break;
+                    }
+                default:
+                    {
+                        Console.WriteLine("Not recognized command");
+                        break;
+                    }
+            }
         }
     }
 }

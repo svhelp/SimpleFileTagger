@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SimpleFileTagger.Runtime
 {
-    internal class SingleCommandWorkflow : WorkflowBase
+    internal class TwoStepWorkflow : WorkflowBase
     {
         public void Run(string[] args)
         {
@@ -20,6 +19,11 @@ namespace SimpleFileTagger.Runtime
             {
                 return;
             }
+
+            Console.WriteLine("Enter tags:");
+            var tags = Console.ReadLine();
+
+            commandModel.Tags = tags.Split();
 
             RunCommand(commandModel);
         }
