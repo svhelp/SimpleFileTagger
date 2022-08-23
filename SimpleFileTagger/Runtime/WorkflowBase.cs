@@ -11,7 +11,7 @@ namespace SimpleFileTagger.Runtime
 {
     internal abstract class WorkflowBase
     {
-        private readonly Regex CommandParser = new Regex("^\"?(.+)\"? -(r|a|s|d|rr)( (.*))?$");
+        private readonly Regex CommandParser = new Regex("^\"?(.+)\"? -(r|a|s|d|rr|na)( (.*))?$");
 
         protected CommandDTO ParseCommand(string command)
         {
@@ -60,6 +60,11 @@ namespace SimpleFileTagger.Runtime
                     {
                         TagsWriter.RemoveDirectoryInfo(command.Path, command.Tags);
                         PrintDirectoryInfo(command.Path);
+                        break;
+                    }
+                case "na":
+                    {
+                        TagsWriter.AddDirectoryNameTags(command.Path);
                         break;
                     }
             }

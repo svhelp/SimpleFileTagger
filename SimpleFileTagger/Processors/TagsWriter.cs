@@ -32,6 +32,23 @@ namespace SimpleFileTagger.Processors
             RemoveDirectoryInfo(path, convertedTags);
         }
 
+        static public void AddDirectoryNameTags(string path)
+        {
+            var innerDirectories = Directory.GetDirectories(path);
+
+            foreach(var innerDirectory in innerDirectories)
+            {
+                var name = innerDirectory.Split("/").Last();
+                var tag = new TagModel
+                {
+                    Name = name,
+                };
+
+                SetDirectoryInfo(name, new List<TagModel> { tag });
+            }
+        }
+
+
         static private void SetDirectoryInfo(string path, List<TagModel> tags)
         {
             ProcessDirectoryInfo(path, (currentTags) => new TaggerDirectoryInfo
