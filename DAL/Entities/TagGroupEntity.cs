@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DAL.Entities
 {
-    internal class TagGroupEntity : EntityBase
+    public class TagGroupEntity : EntityBase
     {
         public virtual ICollection<TagEntity> Tags { get; set; }
     }

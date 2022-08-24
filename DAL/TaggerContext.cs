@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DAL
 {
-    internal class TaggerContext : DbContext
+    public class TaggerContext : DbContext
     {
         public DbSet<TagEntity> Tags { get; set; }
 
@@ -16,7 +16,10 @@ namespace DAL
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Filename=tagger.db");
+            var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var dbFile = Path.Combine(appData, "FileTagger", "tagger.db");
+
+            optionsBuilder.UseSqlite($"Filename={dbFile}");
         }
     }
 }

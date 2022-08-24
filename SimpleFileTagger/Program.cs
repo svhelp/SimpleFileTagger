@@ -1,4 +1,6 @@
-﻿using SimpleFileTagger.Models;
+﻿using DAL;
+using Microsoft.EntityFrameworkCore;
+using SimpleFileTagger.Models;
 using SimpleFileTagger.Processors;
 using SimpleFileTagger.Runtime;
 using System.Linq;
@@ -8,8 +10,13 @@ namespace SimpleFileTagger
 {
     internal class Program
     {
+        private static readonly string appDataPath =
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FileTagger");
+
         static void Main(string[] args)
         {
+            init();
+
             if (!args.Any())
             {
                 var workflow = new PersistentWorkflow();
@@ -37,6 +44,19 @@ namespace SimpleFileTagger
                         break;
                     }
             }
+        }
+
+        private static void init()
+        {
+            if (Directory.Exists(appDataPath))
+            {
+                return;
+            }
+
+            Directory.CreateDirectory(appDataPath);
+
+            using var context = new TaggerContext();
+            context.Database.Migrate();
         }
     }
 }

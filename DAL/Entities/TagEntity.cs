@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DAL.Entities
 {
-    internal class TagEntity : EntityBase
+    public class TagEntity : EntityBase
     {
         public string Name { get; set; }
 
