@@ -14,6 +14,10 @@ namespace DAL
 
         public DbSet<TagGroupEntity> TagGroups { get; set; }
 
+        public DbSet<LocationEntity> Locations { get; set; }
+
+        public DbSet<RootEntity> Roots { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
