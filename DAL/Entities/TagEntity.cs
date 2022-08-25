@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -12,8 +13,10 @@ namespace DAL.Entities
         public string Name { get; set; }
 
         [ForeignKey(nameof(Group))]
-        public Guid GroupId { get; set; }
+        public Guid? GroupId { get; set; }
 
         public virtual TagGroupEntity Group { get; set; }
+
+        public virtual ICollection<LocationEntity> Locations { get; set; }
     }
 }

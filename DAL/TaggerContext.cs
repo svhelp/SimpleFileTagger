@@ -23,7 +23,17 @@ namespace DAL
             var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             var dbFile = Path.Combine(appData, "FileTagger", "tagger.db");
 
-            optionsBuilder.UseSqlite($"Filename={dbFile}");
+            optionsBuilder
+                .UseLazyLoadingProxies()
+                .UseSqlite($"Filename={dbFile}");
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TagEntity>()
+                .HasOne(p => p.Group)
+                .WithMany(b => b.Tags)
+                .IsRequired(false);
         }
     }
 }

@@ -3,6 +3,7 @@ using DAL.Entities;
 using SimpleFileTagger.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -13,11 +14,37 @@ namespace SimpleFileTagger.Processors
 {
     internal class TagsReader : ProcessorBase
     {
-        static public RootEntity GetDbRootData(string rootPath)
+        static public void PrintRootInfoRecursively(string rootPath)
         {
             using var context = new TaggerContext();
 
-            return context.Roots.FirstOrDefault(r => r.Path == rootPath);
+            var root = context.Roots.FirstOrDefault(r => r.Path == rootPath);
+
+            if (root == null)
+            {
+                Console.WriteLine("Path does not exist in the DB.");
+                return;
+            }
+
+            PrintLocationInfo(root.RootLocation, string.Empty);
+        }
+
+
+        private static void PrintLocationInfo(LocationEntity location, string? parentPath)
+        {
+            var currentPath = (parentPath ?? string.Empty) + "\\" + location.Name;
+
+            Console.WriteLine(currentPath);
+
+            foreach (var tag in location.Tags)
+            {
+                Console.WriteLine(tag.Name);
+            }
+
+            foreach (var child in location.Children)
+            {
+                PrintLocationInfo(child, currentPath);
+            }
         }
 
         static public void ImportRootDitectory(string rootPath)
@@ -29,17 +56,11 @@ namespace SimpleFileTagger.Processors
             var pathMap = new Dictionary<string, LocationEntity>();
 
             var directoriesData = GetDirectoryInfoRecoursively(rootPath);
+
             var rootDirectoryData = directoriesData.FirstOrDefault();
-            var rootDirectoryPath = rootDirectoryData.Key.Substring(rootPath.Length);
+            var rootDirectory = GetDirectoryDbData(rootDirectoryData, existingTags, out string _);
 
-            var rootDirectory = new LocationEntity
-            {
-                Name = rootDirectoryPath,
-                Tags = GetOrCreateTags(existingTags, rootDirectoryData.Value.Tags),
-                Children = new List<LocationEntity>()
-            };
-
-            pathMap.Add(rootDirectoryPath, rootDirectory);
+            pathMap.Add(rootDirectoryData.Key, rootDirectory);
 
             var root = new RootEntity
             {
@@ -47,26 +68,37 @@ namespace SimpleFileTagger.Processors
                 RootLocation = rootDirectory
             };
 
-            foreach (KeyValuePair<string, TaggerDirectoryInfo> directory in directoriesData)
-            {
-                var pathParts = directory.Key.Split("/").ToList();
-                var directoryName = pathParts.Last();
-                var parentPath = string.Join("/", pathParts.Take(pathParts.Count - 1));
+            //rootDirectory.Root = root;
 
-                var locationData = new LocationEntity
-                {
-                    Name = directoryName,
-                    Tags = GetOrCreateTags(existingTags, directory.Value.Tags),
-                    Children = new List<LocationEntity>()
-                };
+            foreach (KeyValuePair<string, TaggerDirectoryInfo> directory in directoriesData.Skip(1))
+            {
+                var locationData = GetDirectoryDbData(directory, existingTags, out string parentPath);
 
                 var parent = pathMap[parentPath];
                 parent.Children.Add(locationData);
+                //locationData.Parent = parent;
 
                 pathMap.Add(directory.Key, locationData);
             }
             
             context.Roots.Add(root);
+            context.SaveChanges();
+        }
+
+        private static LocationEntity GetDirectoryDbData(
+            KeyValuePair<string, TaggerDirectoryInfo> directory,
+            List<TagEntity> existingTags,
+            out string parentPath)
+        {
+            var directoryName = Path.GetFileName(directory.Key);
+            parentPath = Path.GetDirectoryName(directory.Key);
+
+            return new LocationEntity
+            {
+                Name = directoryName,
+                Tags = GetOrCreateTags(existingTags, directory.Value.Tags),
+                Children = new List<LocationEntity>()
+            };
         }
 
         private static List<TagEntity> GetOrCreateTags(List<TagEntity> existingTags, List<TagModel> tags)

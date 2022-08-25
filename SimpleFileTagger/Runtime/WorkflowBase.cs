@@ -3,6 +3,7 @@ using SimpleFileTagger.Models;
 using SimpleFileTagger.Processors;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -12,7 +13,7 @@ namespace SimpleFileTagger.Runtime
 {
     internal abstract class WorkflowBase
     {
-        private readonly Regex CommandParser = new Regex("^\"?(.+)\"? -(r|a|s|d|rr|na|import|root)( (.*))?$");
+        private readonly Regex CommandParser = new Regex("^\"?(.+?)\"? -(r|a|s|d|rr|na|import|root)( (.*))?$");
 
         protected CommandDTO ParseCommand(string command)
         {
@@ -71,43 +72,13 @@ namespace SimpleFileTagger.Runtime
                 case "import":
                     {
                         TagsReader.ImportRootDitectory(command.Path);
-                        PrintRootInfoRecursively(command.Path);
                         break;
                     }
                 case "root":
                     {
-                        PrintRootInfoRecursively(command.Path);
+                        TagsReader.PrintRootInfoRecursively(command.Path);
                         break;
                     }
-            }
-        }
-        private static void PrintRootInfoRecursively(string path)
-        {
-            var data = TagsReader.GetDbRootData(path);
-
-            if (data == null)
-            {
-                Console.WriteLine("Path does not exist in the DB.");
-                return;
-            }
-
-            PrintLocationInfo(data.RootLocation, data.Path);
-        }
-
-        private static void PrintLocationInfo(LocationEntity location, string? parentPath)
-        {
-            var currentPath = parentPath ?? string.Empty + location.Name;
-
-            Console.WriteLine(currentPath);
-
-            foreach (var tag in location.Tags)
-            {
-                Console.WriteLine(tag.Name);
-            }
-
-            foreach (var child in location.Children)
-            {
-                PrintLocationInfo(child, currentPath);
             }
         }
 

@@ -56,6 +56,7 @@ namespace SimpleFileTagger
             Directory.CreateDirectory(appDataPath);
 
             using var context = new TaggerContext();
+            context.Database.EnsureCreated();
             context.Database.Migrate();
         }
     }

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(TaggerContext))]
-    [Migration("20220824181026_AddLocationFields")]
-    partial class AddLocationFields
+    [Migration("20220825203414_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -70,10 +70,7 @@ namespace DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("GroupId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("LocationEntityId")
+                    b.Property<Guid?>("GroupId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -83,8 +80,6 @@ namespace DAL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("GroupId");
-
-                    b.HasIndex("LocationEntityId");
 
                     b.ToTable("Tags");
                 });
@@ -98,6 +93,21 @@ namespace DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TagGroups");
+                });
+
+            modelBuilder.Entity("LocationEntityTagEntity", b =>
+                {
+                    b.Property<Guid>("LocationsId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("TagsId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("LocationsId", "TagsId");
+
+                    b.HasIndex("TagsId");
+
+                    b.ToTable("LocationEntityTagEntity");
                 });
 
             modelBuilder.Entity("DAL.Entities.LocationEntity", b =>
@@ -130,22 +140,29 @@ namespace DAL.Migrations
                 {
                     b.HasOne("DAL.Entities.TagGroupEntity", "Group")
                         .WithMany("Tags")
-                        .HasForeignKey("GroupId")
+                        .HasForeignKey("GroupId");
+
+                    b.Navigation("Group");
+                });
+
+            modelBuilder.Entity("LocationEntityTagEntity", b =>
+                {
+                    b.HasOne("DAL.Entities.LocationEntity", null)
+                        .WithMany()
+                        .HasForeignKey("LocationsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DAL.Entities.LocationEntity", null)
-                        .WithMany("Tags")
-                        .HasForeignKey("LocationEntityId");
-
-                    b.Navigation("Group");
+                    b.HasOne("DAL.Entities.TagEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TagsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DAL.Entities.LocationEntity", b =>
                 {
                     b.Navigation("Children");
-
-                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("DAL.Entities.TagGroupEntity", b =>
