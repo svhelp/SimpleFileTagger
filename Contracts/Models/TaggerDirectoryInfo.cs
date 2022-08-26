@@ -10,6 +10,8 @@ namespace Contracts.Models
     {
         public string Path { get; set; }
 
+        public List<TaggerDirectoryInfo> Children { get; set; }
+
         public List<TagModel> Tags { get; set; } = new List<TagModel>();
     }
 }

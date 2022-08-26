@@ -11,18 +11,6 @@ namespace Core.Processors
     {
         private const string DefaultFileName = ".sft";
 
-        protected IMapper Mapper { get; }
-
-        protected ProcessorBase()
-        {
-            var mapperConfig = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<CoreMapperProfile>();
-            });
-
-            Mapper = mapperConfig.CreateMapper();
-        }
-
         protected static string GetDataFilePath(string directoryPath)
         {
             return Path.Combine(directoryPath, DefaultFileName);

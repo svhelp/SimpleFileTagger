@@ -1,5 +1,9 @@
-﻿using Contracts.Models;
+﻿using Contracts.CommandModels;
+using Contracts.Models;
+using Core.Commands;
+using Core.Importers;
 using Core.Processors;
+using Core.Queries;
 using DAL.Entities;
 using System;
 using System.Collections.Generic;
@@ -13,7 +17,7 @@ namespace SimpleFileTagger.Runtime
 {
     internal abstract class WorkflowBase
     {
-        private readonly Regex CommandParser = new Regex("^\"?(.+?)\"? -(r|a|s|d|rr|na|import|root)( (.*))?$");
+        private readonly Regex CommandParser = new Regex("^\"?(.+?)\"? -(r|a|s|d|rr|na|import|add|set|delete|location)( (.*))?$");
 
         protected CommandDTO ParseCommand(string command)
         {
@@ -71,14 +75,57 @@ namespace SimpleFileTagger.Runtime
                     }
                 case "import":
                     {
-                        TagsReader.ImportRootDitectory(command.Path);
+                        LegacyDataImporter.ImportRootDitectory(command.Path);
                         break;
                     }
-                case "root":
+                case "add":
                     {
-                        TagsReader.PrintRootInfoRecursively(command.Path);
+                        var action = new AddTagCommand();
+                        var model = new UpdateTagsCommandModel { Path = command.Path, Tags = command.Tags };
+                        action.Run(model);
                         break;
                     }
+                case "set":
+                    {
+                        var action = new SetTagsCommand();
+                        var model = new UpdateTagsCommandModel { Path = command.Path, Tags = command.Tags };
+                        action.Run(model);
+                        break;
+                    }
+                case "delete":
+                    {
+                        var action = new RemoveTagCommand();
+                        var model = new UpdateTagsCommandModel { Path = command.Path, Tags = command.Tags };
+                        action.Run(model);
+                        break;
+                    }
+                case "location":
+                    {
+                        PrintLocationInfoRecursively(command.Path);
+                        break;
+                    }
+            }
+        }
+        private static void PrintLocationInfoRecursively(string path)
+        {
+            var query = new GetLocationDataQuery();
+            var data = query.Run(path);
+
+            PrintLocationInfo(data);
+        }
+
+        private static void PrintLocationInfo(TaggerDirectoryInfo directoryInfo)
+        {
+            Console.WriteLine(directoryInfo.Path);
+
+            foreach(var tag in directoryInfo.Tags)
+            {
+                Console.WriteLine(tag.Name);
+            }
+
+            foreach (var child in directoryInfo.Children)
+            {
+                PrintLocationInfo(child);
             }
         }
 
