@@ -1,7 +1,5 @@
 ﻿using DAL;
 using Microsoft.EntityFrameworkCore;
-using SimpleFileTagger.Models;
-using SimpleFileTagger.Processors;
 using SimpleFileTagger.Runtime;
 using System.Linq;
 using System.Text.RegularExpressions;
