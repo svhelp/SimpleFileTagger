@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SimpleFileTagger.Models
+namespace Contracts.Models
 {
-    internal class TaggerDirectoryInfo
+    public class TaggerDirectoryInfo : ModelBase
     {
         public List<TagModel> Tags { get; set; } = new List<TagModel>();
     }

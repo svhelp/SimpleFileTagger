@@ -9,6 +9,9 @@ namespace DAL.Entities
 {
     public class LocationEntity : EntityBase
     {
+        // Temp field
+        public string Path { get; set; }
+
         public string Name { get; set; }
 
         [ForeignKey(nameof(Root))]

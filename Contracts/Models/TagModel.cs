@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SimpleFileTagger.Models
+namespace Contracts.Models
 {
-    internal class TagModel : ModelBase
+    public class TagModel : ModelBase
     {
         public string Name { get; set; }
 

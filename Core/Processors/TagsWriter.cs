@@ -1,4 +1,4 @@
-﻿using SimpleFileTagger.Models;
+﻿using Contracts.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,9 +7,9 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace SimpleFileTagger.Processors
+namespace Core.Processors
 {
-    internal class TagsWriter : ProcessorBase
+    public class TagsWriter : ProcessorBase
     {
         static public void SetDirectoryInfo(string path, IEnumerable<string> tags)
         {
@@ -36,7 +36,7 @@ namespace SimpleFileTagger.Processors
         {
             var innerDirectories = Directory.GetDirectories(path);
 
-            foreach(var innerDirectory in innerDirectories)
+            foreach (var innerDirectory in innerDirectories)
             {
                 var name = innerDirectory.Split("/").Last();
                 var tag = new TagModel
@@ -59,7 +59,8 @@ namespace SimpleFileTagger.Processors
 
         static private void AddDirectoryInfo(string path, List<TagModel> tags)
         {
-            ProcessDirectoryInfo(path, (currentTags) => new TaggerDirectoryInfo {
+            ProcessDirectoryInfo(path, (currentTags) => new TaggerDirectoryInfo
+            {
                 Tags = currentTags.Tags.Concat(tags).ToList()
             });
         }

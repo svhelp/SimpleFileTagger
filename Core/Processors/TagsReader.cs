@@ -1,6 +1,6 @@
-﻿using DAL;
+﻿using Contracts.Models;
+using DAL;
 using DAL.Entities;
-using SimpleFileTagger.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,9 +10,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace SimpleFileTagger.Processors
+namespace Core.Processors
 {
-    internal class TagsReader : ProcessorBase
+    public class TagsReader : ProcessorBase
     {
         static public void PrintRootInfoRecursively(string rootPath)
         {
@@ -80,7 +80,7 @@ namespace SimpleFileTagger.Processors
 
                 pathMap.Add(directory.Key, locationData);
             }
-            
+
             context.Roots.Add(root);
             context.SaveChanges();
         }
@@ -105,7 +105,7 @@ namespace SimpleFileTagger.Processors
         {
             var tagEntities = new List<TagEntity>();
 
-            foreach(var tag in tags)
+            foreach (var tag in tags)
             {
                 var existingTag = existingTags.FirstOrDefault(t => t.Name == tag.Name);
 
@@ -148,7 +148,7 @@ namespace SimpleFileTagger.Processors
 
             var innerDirectories = Directory.GetDirectories(path);
 
-            foreach(var subdir in innerDirectories)
+            foreach (var subdir in innerDirectories)
             {
                 getDirectoryInfoRecoursively(subdir, result);
             }

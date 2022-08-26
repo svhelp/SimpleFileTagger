@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SimpleFileTagger.Processors
+namespace Core.Processors
 {
-    internal class ProcessorBase
+    public class ProcessorBase
     {
         private const string DefaultFileName = ".sft";
 

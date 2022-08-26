@@ -1,6 +1,6 @@
-﻿using DAL.Entities;
-using SimpleFileTagger.Models;
-using SimpleFileTagger.Processors;
+﻿using Contracts.Models;
+using Core.Processors;
+using DAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.IO;

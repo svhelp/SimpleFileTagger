@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SimpleFileTagger.Models
+namespace Contracts.Models
 {
-    internal abstract class ModelBase
+    public abstract class ModelBase
     {
         public Guid Id { get; set; }
     }

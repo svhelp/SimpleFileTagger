@@ -30,6 +30,10 @@ namespace DAL.Migrations
                     b.Property<Guid?>("ParentId")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid?>("RootId")
                         .HasColumnType("TEXT");
 
