@@ -8,6 +8,8 @@ namespace Contracts.Models
 {
     public class TaggerDirectoryInfo : ModelBase
     {
+        public string Path { get; set; }
+
         public List<TagModel> Tags { get; set; } = new List<TagModel>();
     }
 }
