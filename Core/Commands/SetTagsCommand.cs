@@ -33,7 +33,12 @@ namespace Core.Commands
                 })
                 .ToList();
 
-            location.Tags = location.Tags.Where(t => !tags.Contains(t.Name)).ToList();
+            var tagsToRemove = location.Tags.Where(t => !tags.Contains(t.Name));
+
+            foreach (var tagToRemove in tagsToRemove)
+            {
+                location.Tags.Remove(tagToRemove);
+            }
 
             var tagsToAdd = notDuplicatedExistingTags.Concat(newTags);
 
