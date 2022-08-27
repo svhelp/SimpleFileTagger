@@ -35,8 +35,7 @@ namespace Core.Queries
                 return Mapper.Map<TaggerDirectoryInfo>(existingLocation);
             }
 
-            var beaconFilePath = BeaconFileProcessor.GetDataFilePath(path);
-            using var beaconFileProcessor = new BeaconFileProcessor(beaconFilePath);
+            var beaconFileProcessor = new BeaconFileProcessor(path);
             var existingId = beaconFileProcessor.GetExistingBeacon();
 
             if (existingId == null)

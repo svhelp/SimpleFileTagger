@@ -111,6 +111,12 @@ namespace SimpleFileTagger.Runtime
             var query = new GetLocationDataQuery();
             var data = query.Run(path);
 
+            if (data == null)
+            {
+                Console.WriteLine("The location is not tracked yet.");
+                return;
+            }
+
             PrintLocationInfo(data);
         }
 

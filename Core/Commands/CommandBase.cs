@@ -15,34 +15,69 @@ namespace Core.Commands
     {
         protected static void ProcessLocation(TaggerContext context, string path, Action<LocationEntity> processor)
         {
-            var beaconFilePath = BeaconFileProcessor.GetDataFilePath(path);
+            var locationName = Path.GetFileName(path);
+            var beaconFileProcessor = new BeaconFileProcessor(path);
 
-            using var beaconFileProcessor = new BeaconFileProcessor(beaconFilePath);
-
-            var existingId = beaconFileProcessor.GetExistingBeacon();
-
-            LocationEntity location = existingId != null
-                ? context.Locations.First(l => l.Id == existingId)
-                : new LocationEntity
-                {
-                    Path = path,
-                    Tags = new List<TagEntity>(),
-                };
+            var beaconId = beaconFileProcessor.GetExistingBeacon();
+            var location = GetLocationEntity(context, beaconId, path);
 
             processor(location);
 
-            if (existingId != null)
-            {
-                context.SaveChanges();
-                return;
-            }
-
-            context.Locations.Add(location);
             context.SaveChanges();
 
-            beaconFileProcessor.CreateBeacon(location);
+            if (beaconId == null)
+            {
+                beaconFileProcessor.CreateBeacon(location);
+            }
         }
 
         public abstract void Run(T model);
+
+        private static LocationEntity GetLocationEntity(TaggerContext context, Guid? beaconId, string path)
+        {
+            var locationName = Path.GetFileName(path);
+            var locationByPath = context.Locations.FirstOrDefault(l => l.Path == path);
+
+            if (locationByPath != null)
+            {
+                if (beaconId == null || beaconId == locationByPath.Id)
+                {
+                    return locationByPath;
+                }
+
+                var locationById = GetOrCreateLocationById(context, beaconId, path, locationName);
+
+                locationByPath.Path = string.Empty;
+
+                return locationById;
+            }
+
+            return GetOrCreateLocationById(context, beaconId, path, locationName);
+        }
+
+        private static LocationEntity GetOrCreateLocationById(TaggerContext context, Guid? id, string path, string locationName)
+        {
+            var locationById = context.Locations.FirstOrDefault(l => l.Id == id);
+
+            if (locationById == null)
+            {
+                locationById = new LocationEntity
+                {
+                    Tags = new List<TagEntity>(),
+                };
+
+                if (id.HasValue)
+                {
+                    locationById.Id = id.Value;
+                }
+
+                context.Locations.Add(locationById);
+            }
+
+            locationById.Path = path;
+            locationById.Name = locationName;
+
+            return locationById;
+        }
     }
 }
