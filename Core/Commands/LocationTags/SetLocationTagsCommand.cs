@@ -10,18 +10,18 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Core.Commands
+namespace Core.Commands.LocationTags
 {
-    public class AddTagCommand : CommandBase<UpdateTagsCommandModel>
+    public class SetLocationTagsCommand : LocationTagsCommandBase<UpdateTagsCommandModel>
     {
         public override void Run(UpdateTagsCommandModel model)
         {
             using var context = new TaggerContext();
 
-            ProcessLocation(context, model.Path, location => AddTags(context, location, model.Tags));
+            ProcessLocation(context, model.Path, location => SetTags(context, location, model.Tags));
         }
 
-        private void AddTags(TaggerContext context, LocationEntity location, string[] tags)
+        private void SetTags(TaggerContext context, LocationEntity location, string[] tags)
         {
             var existingTags = context.Tags.Where(t => tags.Contains(t.Name)).ToList();
             var notDuplicatedExistingTags = existingTags.Where(et => !location.Tags.Contains(et)).ToList();
@@ -32,6 +32,13 @@ namespace Core.Commands
                     Name = t,
                 })
                 .ToList();
+
+            var tagsToRemove = location.Tags.Where(t => !tags.Contains(t.Name));
+
+            foreach (var tagToRemove in tagsToRemove)
+            {
+                location.Tags.Remove(tagToRemove);
+            }
 
             var tagsToAdd = notDuplicatedExistingTags.Concat(newTags);
 

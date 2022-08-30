@@ -1,6 +1,7 @@
 ﻿using Contracts.CommandModels;
 using Contracts.Models;
 using Core.Commands;
+using Core.Commands.Tags;
 using Core.Queries;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,25 +22,25 @@ namespace SFTServer.Controllers
             return result;
         }
 
-        [HttpPut]
-        public void Add(UpdateTagsCommandModel model)
+        [HttpPost]
+        public void Create(SimpleNamedModel model)
         {
-            var action = new AddTagCommand();
-            action.Run(model);
+            var command = new CreateTagCommand();
+            command.Run(model);
+        }
+
+        [HttpDelete]
+        public void Remove(Guid id)
+        {
+            var command = new RemoveTagCommand();
+            command.Run(id);
         }
 
         [HttpPut]
-        public void Set(UpdateTagsCommandModel model)
+        public void Merge(MergeTagsCommandModel model)
         {
-            var action = new SetTagsCommand();
-            action.Run(model);
-        }
-
-        [HttpPut]
-        public void Delete(UpdateTagsCommandModel model)
-        {
-            var action = new RemoveTagCommand();
-            action.Run(model);
+            var command = new MergeTagsCommand();
+            command.Run(model);
         }
     }
 }

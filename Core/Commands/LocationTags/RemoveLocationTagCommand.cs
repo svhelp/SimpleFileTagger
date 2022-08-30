@@ -10,9 +10,9 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Core.Commands
+namespace Core.Commands.LocationTags
 {
-    public class RemoveTagCommand : CommandBase<UpdateTagsCommandModel>
+    public class RemoveLocationTagCommand : LocationTagsCommandBase<UpdateTagsCommandModel>
     {
         public override void Run(UpdateTagsCommandModel model)
         {

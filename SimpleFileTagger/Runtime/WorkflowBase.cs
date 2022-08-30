@@ -1,6 +1,7 @@
 ﻿using Contracts.CommandModels;
 using Contracts.Models;
 using Core.Commands;
+using Core.Commands.LocationTags;
 using Core.Importers;
 using Core.Processors;
 using Core.Queries;
@@ -80,21 +81,21 @@ namespace SimpleFileTagger.Runtime
                     }
                 case "add":
                     {
-                        var action = new AddTagCommand();
+                        var action = new AddLocationTagCommand();
                         var model = new UpdateTagsCommandModel { Path = command.Path, Tags = command.Tags };
                         action.Run(model);
                         break;
                     }
                 case "set":
                     {
-                        var action = new SetTagsCommand();
+                        var action = new SetLocationTagsCommand();
                         var model = new UpdateTagsCommandModel { Path = command.Path, Tags = command.Tags };
                         action.Run(model);
                         break;
                     }
                 case "delete":
                     {
-                        var action = new RemoveTagCommand();
+                        var action = new RemoveLocationTagCommand();
                         var model = new UpdateTagsCommandModel { Path = command.Path, Tags = command.Tags };
                         action.Run(model);
                         break;
