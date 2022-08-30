@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleFileTagger", "SimpleF
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "DAL\DAL.csproj", "{C4454FC0-7306-4BF7-9EB3-1FFEC18F156C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{52CEDE46-2740-4273-B128-2F2901B5815C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{52CEDE46-2740-4273-B128-2F2901B5815C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contracts", "Contracts\Contracts.csproj", "{FFCF1B6E-450B-4F18-9137-6F1D47776173}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contracts", "Contracts\Contracts.csproj", "{FFCF1B6E-450B-4F18-9137-6F1D47776173}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFTServer", "SFTServer\SFTServer.csproj", "{0F8B731F-3192-4AE9-8AB4-E4E1191B0869}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{FFCF1B6E-450B-4F18-9137-6F1D47776173}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFCF1B6E-450B-4F18-9137-6F1D47776173}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFCF1B6E-450B-4F18-9137-6F1D47776173}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F8B731F-3192-4AE9-8AB4-E4E1191B0869}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F8B731F-3192-4AE9-8AB4-E4E1191B0869}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F8B731F-3192-4AE9-8AB4-E4E1191B0869}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F8B731F-3192-4AE9-8AB4-E4E1191B0869}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
