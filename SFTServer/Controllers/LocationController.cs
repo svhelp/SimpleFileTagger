@@ -1,5 +1,6 @@
 ﻿using Contracts.CommandModels;
 using Contracts.Models;
+using Contracts.QueryModel;
 using Core.Commands;
 using Core.Commands.LocationTags;
 using Core.Queries;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace SFTServer.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class LocationController : ControllerBase
     {
@@ -21,8 +22,17 @@ namespace SFTServer.Controllers
             return data;
         }
 
+        [HttpGet]
+        public IEnumerable<TaggerDirectoryInfo> All()
+        {
+            var query = new GetAllLocationsDataQuery();
+            var data = query.Run(new EmptyQueryModel());
+
+            return data;
+        }
+
         [HttpPut]
-        public void AddTag(UpdateTagsCommandModel model)
+        public void AddTags(UpdateTagsCommandModel model)
         {
             var action = new AddLocationTagCommand();
             action.Run(model);
@@ -36,7 +46,7 @@ namespace SFTServer.Controllers
         }
 
         [HttpPut]
-        public void RemoveTag(UpdateTagsCommandModel model)
+        public void RemoveTags(UpdateTagsCommandModel model)
         {
             var action = new RemoveLocationTagCommand();
             action.Run(model);

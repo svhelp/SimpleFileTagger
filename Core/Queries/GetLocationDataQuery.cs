@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Core.Queries
 {
-    public class GetLocationDataQuery
+    public class GetLocationDataQuery : QueryBase<string, TaggerDirectoryInfo>
     {
         protected IMapper Mapper { get; }
 
@@ -24,7 +24,7 @@ namespace Core.Queries
             Mapper = mapperConfig.CreateMapper();
         }
 
-        public TaggerDirectoryInfo Run(string path)
+        public override TaggerDirectoryInfo Run(string path)
         {
             using var context = new TaggerContext();
 

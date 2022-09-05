@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Contracts.Models;
-using Core.Processors;
+using Contracts.QueryModel;
 using DAL;
 using System;
 using System.Collections.Generic;
@@ -10,9 +10,11 @@ using System.Threading.Tasks;
 
 namespace Core.Queries
 {
-    public class GetTagsQuery : QueryBase<Guid?, IEnumerable<TagModel>>
+    public class GetAllLocationsDataQuery : QueryBase<EmptyQueryModel, IEnumerable<TaggerDirectoryInfo>>
     {
-        public GetTagsQuery()
+        protected IMapper Mapper { get; }
+
+        public GetAllLocationsDataQuery()
         {
             var mapperConfig = new MapperConfiguration(cfg =>
             {
@@ -22,19 +24,13 @@ namespace Core.Queries
             Mapper = mapperConfig.CreateMapper();
         }
 
-        private IMapper Mapper { get; }
-
-        public override IEnumerable<TagModel> Run(Guid? id)
+        public override IEnumerable<TaggerDirectoryInfo> Run(EmptyQueryModel model)
         {
             using var context = new TaggerContext();
 
-            var tags = id == null
-                ? context.Tags.AsQueryable()
-                : context.Tags.Where(t => t.Id == id);
+            var locations = context.Locations.AsQueryable();
 
-            var result = Mapper.Map<List<TagModel>>(tags);
-
-            return result;
+            return Mapper.Map<List<TaggerDirectoryInfo>>(locations);
         }
     }
 }
