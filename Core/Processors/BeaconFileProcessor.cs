@@ -22,11 +22,18 @@ namespace Core.Processors
 
         public void CreateBeacon(LocationEntity location)
         {
+            var fileExists = File.Exists(BeaconPath);
+
             using var stream = new FileStream(BeaconPath, FileMode.OpenOrCreate, FileAccess.Write);
             stream.SetLength(0);
 
             using var streamWriter = new StreamWriter(stream);
             streamWriter.WriteLine(location.Id);
+
+            if (!fileExists)
+            {
+                File.SetAttributes(BeaconPath, FileAttributes.Hidden);
+            }
         }
 
         public Guid? GetExistingBeacon()
