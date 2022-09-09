@@ -17,6 +17,8 @@ namespace DAL.Entities
 
         public virtual TagGroupEntity Group { get; set; }
 
+        public virtual ThumbnailEntity Thumbnail { get; set; }
+
         public virtual ICollection<LocationEntity> Locations { get; set; }
     }
 }

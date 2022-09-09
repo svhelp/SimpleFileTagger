@@ -14,6 +14,8 @@ namespace DAL
 
         public DbSet<TagGroupEntity> TagGroups { get; set; }
 
+        public DbSet<ThumbnailEntity> Thumbnails { get; set; }
+
         public DbSet<LocationEntity> Locations { get; set; }
 
         public DbSet<RootEntity> Roots { get; set; }
@@ -33,6 +35,11 @@ namespace DAL
             modelBuilder.Entity<TagEntity>()
                 .HasOne(p => p.Group)
                 .WithMany(b => b.Tags)
+                .IsRequired(false);
+
+            modelBuilder.Entity<TagEntity>()
+                .HasOne(p => p.Thumbnail)
+                .WithOne(t => t.Tag)
                 .IsRequired(false);
         }
     }

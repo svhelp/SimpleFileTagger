@@ -8,6 +8,8 @@ namespace DAL.Entities
 {
     public class TagGroupEntity : EntityBase
     {
+        public string Name { get; set; }
+
         public virtual ICollection<TagEntity> Tags { get; set; }
     }
 }
