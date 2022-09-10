@@ -11,11 +11,14 @@ namespace Core.Commands.Tags
 {
     public class CreateTagCommand : CommandBase<SimpleNamedModel>
     {
+        public CreateTagCommand(TaggerContext context)
+            : base(context)
+        {
+        }
+
         public override void Run(SimpleNamedModel model)
         {
-            using var context = new TaggerContext();
-
-            if (context.Tags.Any(t => t.Name == model.Name))
+            if (Context.Tags.Any(t => t.Name == model.Name))
             {
                 throw new ArgumentException("Tag with the name already exists.");
             }
@@ -25,8 +28,8 @@ namespace Core.Commands.Tags
                 Name = model.Name,
             };
 
-            context.Tags.Add(newTag);
-            context.SaveChanges();
+            Context.Tags.Add(newTag);
+            Context.SaveChanges();
         }
     }
 }

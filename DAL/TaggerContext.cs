@@ -10,6 +10,17 @@ namespace DAL
 {
     public class TaggerContext : DbContext
     {
+        public TaggerContext()
+        {
+
+        }
+
+        public TaggerContext(DbContextOptions<TaggerContext> options)
+            : base(options)
+        {
+
+        }
+
         public DbSet<TagEntity> Tags { get; set; }
 
         public DbSet<TagGroupEntity> TagGroups { get; set; }

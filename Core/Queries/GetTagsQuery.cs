@@ -12,25 +12,20 @@ namespace Core.Queries
 {
     public class GetTagsQuery : QueryBase<Guid?, IEnumerable<TagModel>>
     {
-        public GetTagsQuery()
+        public GetTagsQuery(TaggerContext context, IMapper mapper)
         {
-            var mapperConfig = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<CoreMapperProfile>();
-            });
-
-            Mapper = mapperConfig.CreateMapper();
+            Context = context;
+            Mapper = mapper;
         }
 
+        private TaggerContext Context { get; }
         private IMapper Mapper { get; }
 
         public override IEnumerable<TagModel> Run(Guid? id)
         {
-            using var context = new TaggerContext();
-
             var tags = id == null
-                ? context.Tags.AsQueryable()
-                : context.Tags.Where(t => t.Id == id);
+                ? Context.Tags.AsQueryable()
+                : Context.Tags.Where(t => t.Id == id);
 
             var result = Mapper.Map<List<TagModel>>(tags);
 

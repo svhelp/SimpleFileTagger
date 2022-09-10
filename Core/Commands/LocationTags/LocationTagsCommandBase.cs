@@ -13,6 +13,11 @@ namespace Core.Commands.LocationTags
 {
     public abstract class LocationTagsCommandBase<T> : CommandBase<T>
     {
+        protected LocationTagsCommandBase(TaggerContext context)
+            : base(context)
+        {
+        }
+
         protected static void ProcessLocation(TaggerContext context, string path, Action<LocationEntity> processor)
         {
             var beaconFileProcessor = new BeaconFileProcessor(path);

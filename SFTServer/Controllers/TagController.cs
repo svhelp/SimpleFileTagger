@@ -13,11 +13,24 @@ namespace SFTServer.Controllers
     [ApiController]
     public class TagController : ControllerBase
     {
+        public TagController(GetTagsQuery getTagsQuery, CreateTagCommand createTagCommand, RemoveTagCommand removeTagCommand, MergeTagsCommand mergeTagsCommand)
+        {
+            GetTagsQuery = getTagsQuery;
+            CreateTagCommand = createTagCommand;
+            RemoveTagCommand = removeTagCommand;
+            MergeTagsCommand = mergeTagsCommand;
+        }
+
+        private GetTagsQuery GetTagsQuery { get; }
+        private CreateTagCommand CreateTagCommand { get; }
+        private RemoveTagCommand RemoveTagCommand { get; }
+        private MergeTagsCommand MergeTagsCommand { get; }
+
+
         [HttpGet]
         public IEnumerable<TagModel> Get()
         {
-            var query = new GetTagsQuery();
-            var result = query.Run(null);
+            var result = GetTagsQuery.Run(null);
 
             return result;
         }
@@ -25,22 +38,19 @@ namespace SFTServer.Controllers
         [HttpPost]
         public void Create(SimpleNamedModel model)
         {
-            var command = new CreateTagCommand();
-            command.Run(model);
+            CreateTagCommand.Run(model);
         }
 
         [HttpDelete]
         public void Remove(Guid id)
         {
-            var command = new RemoveTagCommand();
-            command.Run(id);
+            RemoveTagCommand.Run(id);
         }
 
         [HttpPut]
         public void Merge(MergeTagsCommandModel model)
         {
-            var command = new MergeTagsCommand();
-            command.Run(model);
+            MergeTagsCommand.Run(model);
         }
     }
 }

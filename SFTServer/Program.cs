@@ -1,3 +1,5 @@
+using SFTServer.Startup;
+
 namespace SFTServer
 {
     public class Program
@@ -7,8 +9,11 @@ namespace SFTServer
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
-            builder.Services.AddControllers();
+            builder.Services.AddContext()
+                .AddMapper()
+                .AddQueries()
+                .AddCommands()
+                .AddControllers();
 
             var app = builder.Build();
 

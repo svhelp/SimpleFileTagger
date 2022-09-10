@@ -14,14 +14,17 @@ namespace Core.Commands.LocationTags
 {
     public class RemoveLocationTagCommand : LocationTagsCommandBase<UpdateTagsCommandModel>
     {
-        public override void Run(UpdateTagsCommandModel model)
+        public RemoveLocationTagCommand(TaggerContext context)
+            : base(context)
         {
-            using var context = new TaggerContext();
-
-            ProcessLocation(context, model.Path, location => RemoveTags(context, location, model.Tags));
         }
 
-        private void RemoveTags(TaggerContext context, LocationEntity location, string[] tags)
+        public override void Run(UpdateTagsCommandModel model)
+        {
+            ProcessLocation(Context, model.Path, location => RemoveTags(location, model.Tags));
+        }
+
+        private void RemoveTags(LocationEntity location, string[] tags)
         {
             var tagsToRemove = location.Tags.Where(t => tags.Contains(t.Name));
 

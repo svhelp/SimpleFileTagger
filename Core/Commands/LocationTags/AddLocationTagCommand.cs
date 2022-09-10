@@ -14,16 +14,19 @@ namespace Core.Commands.LocationTags
 {
     public class AddLocationTagCommand : LocationTagsCommandBase<UpdateTagsCommandModel>
     {
-        public override void Run(UpdateTagsCommandModel model)
+        public AddLocationTagCommand(TaggerContext context)
+            : base(context)
         {
-            using var context = new TaggerContext();
-
-            ProcessLocation(context, model.Path, location => AddTags(context, location, model.Tags));
         }
 
-        private void AddTags(TaggerContext context, LocationEntity location, string[] tags)
+        public override void Run(UpdateTagsCommandModel model)
         {
-            var existingTags = context.Tags.Where(t => tags.Contains(t.Name)).ToList();
+            ProcessLocation(Context, model.Path, location => AddTags(location, model.Tags));
+        }
+
+        private void AddTags(LocationEntity location, string[] tags)
+        {
+            var existingTags = Context.Tags.Where(t => tags.Contains(t.Name)).ToList();
             var notDuplicatedExistingTags = existingTags.Where(et => !location.Tags.Contains(et)).ToList();
             var newTags = tags
                 .Where(t => !existingTags.Any(et => et.Name == t))

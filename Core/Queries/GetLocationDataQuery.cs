@@ -12,23 +12,18 @@ namespace Core.Queries
 {
     public class GetLocationDataQuery : QueryBase<string, TaggerDirectoryInfo>
     {
-        protected IMapper Mapper { get; }
-
-        public GetLocationDataQuery()
+        public GetLocationDataQuery(IMapper mapper, TaggerContext context)
         {
-            var mapperConfig = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<CoreMapperProfile>();
-            });
-
-            Mapper = mapperConfig.CreateMapper();
+            Mapper = mapper;
+            Context = context;
         }
+
+        private IMapper Mapper { get; }
+        private TaggerContext Context { get; }
 
         public override TaggerDirectoryInfo Run(string path)
         {
-            using var context = new TaggerContext();
-
-            var existingLocation = context.Locations.FirstOrDefault(x => x.Path == path);
+            var existingLocation = Context.Locations.FirstOrDefault(x => x.Path == path);
 
             if (existingLocation != null)
             {
@@ -43,7 +38,7 @@ namespace Core.Queries
                 return null;
             }
 
-            existingLocation = context.Locations.FirstOrDefault(x => x.Id == existingId);
+            existingLocation = Context.Locations.FirstOrDefault(x => x.Id == existingId);
 
             if (existingLocation == null)
             {

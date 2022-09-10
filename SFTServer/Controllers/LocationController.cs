@@ -13,11 +13,25 @@ namespace SFTServer.Controllers
     [ApiController]
     public class LocationController : ControllerBase
     {
+        public LocationController(GetLocationDataQuery getLocationDataQuery, GetAllLocationsDataQuery getAllLocationsDataQuery, AddLocationTagCommand addLocationTagCommand, SetLocationTagsCommand setLocationTagsCommand, RemoveLocationTagCommand removeLocationTagCommand)
+        {
+            GetLocationDataQuery = getLocationDataQuery;
+            GetAllLocationsDataQuery = getAllLocationsDataQuery;
+            AddLocationTagCommand = addLocationTagCommand;
+            SetLocationTagsCommand = setLocationTagsCommand;
+            RemoveLocationTagCommand = removeLocationTagCommand;
+        }
+
+        private GetLocationDataQuery GetLocationDataQuery { get; }
+        private GetAllLocationsDataQuery GetAllLocationsDataQuery { get; }
+        private AddLocationTagCommand AddLocationTagCommand { get; }
+        private SetLocationTagsCommand SetLocationTagsCommand { get; }
+        private RemoveLocationTagCommand RemoveLocationTagCommand { get; }
+
         [HttpGet]
         public TaggerDirectoryInfo Get(string path)
         {
-            var query = new GetLocationDataQuery();
-            var data = query.Run(path);
+            var data = GetLocationDataQuery.Run(path);
 
             return data;
         }
@@ -25,8 +39,7 @@ namespace SFTServer.Controllers
         [HttpGet]
         public IEnumerable<TaggerDirectoryInfo> All()
         {
-            var query = new GetAllLocationsDataQuery();
-            var data = query.Run(new EmptyQueryModel());
+            var data = GetAllLocationsDataQuery.Run(new EmptyQueryModel());
 
             return data;
         }
@@ -34,22 +47,19 @@ namespace SFTServer.Controllers
         [HttpPut]
         public void AddTags(UpdateTagsCommandModel model)
         {
-            var action = new AddLocationTagCommand();
-            action.Run(model);
+            AddLocationTagCommand.Run(model);
         }
 
         [HttpPut]
         public void SetTags(UpdateTagsCommandModel model)
         {
-            var action = new SetLocationTagsCommand();
-            action.Run(model);
+            SetLocationTagsCommand.Run(model);
         }
 
         [HttpPut]
         public void RemoveTags(UpdateTagsCommandModel model)
         {
-            var action = new RemoveLocationTagCommand();
-            action.Run(model);
+            RemoveLocationTagCommand.Run(model);
         }
     }
 }

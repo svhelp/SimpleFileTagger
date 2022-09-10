@@ -10,19 +10,22 @@ namespace Core.Commands.Tags
 {
     public class RemoveTagCommand : CommandBase<Guid>
     {
+        public RemoveTagCommand(TaggerContext context)
+            : base(context)
+        {
+        }
+
         public override void Run(Guid model)
         {
-            using var context = new TaggerContext();
-
-            var tagToRemove = context.Tags.FirstOrDefault(t => t.Id == model);
+            var tagToRemove = Context.Tags.FirstOrDefault(t => t.Id == model);
 
             if (tagToRemove == null)
             {
                 throw new ArgumentException("Tag does not exist.");
             }
 
-            context.Tags.Remove(tagToRemove);
-            context.SaveChanges();
+            Context.Tags.Remove(tagToRemove);
+            Context.SaveChanges();
         }
     }
 }

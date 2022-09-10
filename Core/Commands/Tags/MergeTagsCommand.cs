@@ -10,6 +10,11 @@ namespace Core.Commands.Tags
 {
     public class MergeTagsCommand : CommandBase<MergeTagsCommandModel>
     {
+        public MergeTagsCommand(TaggerContext Context)
+            : base(Context)
+        {
+        }
+
         public override void Run(MergeTagsCommandModel model)
         {
             if (model.TagIds.Count < 2)
@@ -17,9 +22,7 @@ namespace Core.Commands.Tags
                 throw new ArgumentException("Not enough tags for merge.");
             }
 
-            using var context = new TaggerContext();
-
-            var tagsToMerge = context.Tags.Where(t => model.TagIds.Contains(t.Id)).ToList();
+            var tagsToMerge = Context.Tags.Where(t => model.TagIds.Contains(t.Id)).ToList();
 
             var tagGroups = tagsToMerge.Select(t => t.GroupId).Distinct();
 
@@ -39,7 +42,7 @@ namespace Core.Commands.Tags
                 }
             }
 
-            context.SaveChanges();
+            Context.SaveChanges();
         }
     }
 }
