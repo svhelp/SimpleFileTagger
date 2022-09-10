@@ -58,6 +58,7 @@ namespace Core.Importers
             return new LocationEntity
             {
                 Name = directoryName,
+                Path = directory.Key,
                 Tags = GetOrCreateTags(existingTags, directory.Value.Tags),
                 Children = new List<LocationEntity>()
             };
