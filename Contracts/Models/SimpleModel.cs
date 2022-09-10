@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Contracts.Models
 {
-    public class TagGroupModel : ModelBase
+    public class SimpleModel
     {
-        public string Name { get; set; }
+        public Guid Id { get; set; }
 
-        public List<TagModel> Tags { get; set; }
+        public string Name { get; set; }
     }
 }

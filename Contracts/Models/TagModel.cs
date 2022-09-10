@@ -11,5 +11,7 @@ namespace Contracts.Models
         public string Name { get; set; }
 
         public TagGroupModel Group { get; set; }
+
+        public ThumbnailModel Thumbnail { get; set; }
     }
 }

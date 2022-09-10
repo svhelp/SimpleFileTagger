@@ -16,6 +16,7 @@ namespace Core
             CreateMap<LocationEntity, TaggerDirectoryInfo>();
             CreateMap<TagEntity, TagModel>();
             CreateMap<TagGroupEntity, TagGroupModel>();
+            CreateMap<ThumbnailEntity, ThumbnailModel>();
         }
     }
 }

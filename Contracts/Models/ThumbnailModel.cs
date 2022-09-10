@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace Contracts.Models
 {
-    public class TagGroupModel : ModelBase
+    public class ThumbnailModel : ModelBase
     {
-        public string Name { get; set; }
-
-        public List<TagModel> Tags { get; set; }
+        public byte[] Image { get; set; }
     }
 }
