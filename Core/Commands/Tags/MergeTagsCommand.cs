@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 
 namespace Core.Commands.Tags
 {
-    public class MergeTagsCommand : CommandBase<MergeTagsCommandModel>
+    public class MergeTagsCommand : CommandBase<MergeTagsCommandModel, CommandResultWith<Guid>>
     {
         public MergeTagsCommand(TaggerContext Context)
             : base(Context)
         {
         }
 
-        public override void Run(MergeTagsCommandModel model)
+        public override CommandResultWith<Guid> Run(MergeTagsCommandModel model)
         {
             if (model.TagIds.Count < 2)
             {
-                throw new ArgumentException("Not enough tags for merge.");
+                return GetErrorResult("Not enough tags for merge.");
             }
 
             var tagsToMerge = Context.Tags.Where(t => model.TagIds.Contains(t.Id)).ToList();
@@ -28,7 +28,7 @@ namespace Core.Commands.Tags
 
             if (tagGroups.Count() > 1)
             {
-                throw new ArgumentException("Impossible to merge tags with different groups.");
+                return GetErrorResult("Impossible to merge tags with different groups.");
             }
 
             var firstTag = tagsToMerge.First();
@@ -43,6 +43,8 @@ namespace Core.Commands.Tags
             }
 
             Context.SaveChanges();
+
+            return GetSuccessfulResult(firstTag.Id);
         }
     }
 }

@@ -9,18 +9,18 @@ using System.Threading.Tasks;
 
 namespace Core.Commands.Tags
 {
-    public class CreateTagCommand : CommandBase<SimpleNamedModel>
+    public class CreateTagCommand : CommandBase<SimpleNamedModel, CommandResultWith<Guid>>
     {
         public CreateTagCommand(TaggerContext context)
             : base(context)
         {
         }
 
-        public override void Run(SimpleNamedModel model)
+        public override CommandResultWith<Guid> Run(SimpleNamedModel model)
         {
             if (Context.Tags.Any(t => t.Name == model.Name))
             {
-                throw new ArgumentException("Tag with the name already exists.");
+                return GetErrorResult("Tag with the name already exists.");
             }
 
             var newTag = new TagEntity
@@ -30,6 +30,8 @@ namespace Core.Commands.Tags
 
             Context.Tags.Add(newTag);
             Context.SaveChanges();
+
+            return GetSuccessfulResult(newTag.Id);
         }
     }
 }

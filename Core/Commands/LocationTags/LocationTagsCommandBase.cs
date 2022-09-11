@@ -11,14 +11,16 @@ using Core.Processors;
 
 namespace Core.Commands.LocationTags
 {
-    public abstract class LocationTagsCommandBase<T> : CommandBase<T>
+    public abstract class LocationTagsCommandBase<T, V>
+        : CommandBase<T, V>
+        where V : CommandResult, new()
     {
         protected LocationTagsCommandBase(TaggerContext context)
             : base(context)
         {
         }
 
-        protected static void ProcessLocation(TaggerContext context, string path, Action<LocationEntity> processor)
+        protected static LocationEntity ProcessLocation(TaggerContext context, string path, Action<LocationEntity> processor)
         {
             var beaconFileProcessor = new BeaconFileProcessor(path);
 
@@ -33,6 +35,8 @@ namespace Core.Commands.LocationTags
             {
                 beaconFileProcessor.CreateBeacon(location);
             }
+
+            return location;
         }
 
         private static LocationEntity GetLocationEntity(TaggerContext context, Guid? beaconId, string path)

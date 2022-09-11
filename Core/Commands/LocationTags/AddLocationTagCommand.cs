@@ -1,4 +1,5 @@
-﻿using Contracts.CommandModels;
+﻿using AutoMapper;
+using Contracts.CommandModels;
 using Contracts.Models;
 using DAL;
 using DAL.Entities;
@@ -12,16 +13,22 @@ using System.Threading.Tasks;
 
 namespace Core.Commands.LocationTags
 {
-    public class AddLocationTagCommand : LocationTagsCommandBase<UpdateTagsCommandModel>
+    public class AddLocationTagCommand : LocationTagsCommandBase<UpdateTagsCommandModel, CommandResultWith<LocationModel>>
     {
-        public AddLocationTagCommand(TaggerContext context)
+        public AddLocationTagCommand(TaggerContext context, IMapper mapper)
             : base(context)
         {
+            Mapper = mapper;
         }
 
-        public override void Run(UpdateTagsCommandModel model)
+        private IMapper Mapper { get; }
+
+        public override CommandResultWith<LocationModel> Run(UpdateTagsCommandModel model)
         {
-            ProcessLocation(Context, model.Path, location => AddTags(location, model.Tags));
+            var updatedLocation = ProcessLocation(Context, model.Path, location => AddTags(location, model.Tags));
+            var result = Mapper.Map<LocationModel>(updatedLocation);
+
+            return GetSuccessfulResult(result);
         }
 
         private void AddTags(LocationEntity location, string[] tags)

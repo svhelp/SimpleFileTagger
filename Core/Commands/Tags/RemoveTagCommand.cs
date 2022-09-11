@@ -8,24 +8,26 @@ using System.Threading.Tasks;
 
 namespace Core.Commands.Tags
 {
-    public class RemoveTagCommand : CommandBase<Guid>
+    public class RemoveTagCommand : CommandBase<Guid, CommandResult>
     {
         public RemoveTagCommand(TaggerContext context)
             : base(context)
         {
         }
 
-        public override void Run(Guid model)
+        public override CommandResult Run(Guid model)
         {
             var tagToRemove = Context.Tags.FirstOrDefault(t => t.Id == model);
 
             if (tagToRemove == null)
             {
-                throw new ArgumentException("Tag does not exist.");
+                return GetErrorResult("Tag does not exist.");
             }
 
             Context.Tags.Remove(tagToRemove);
             Context.SaveChanges();
+
+            return GetSuccessfulResult();
         }
     }
 }

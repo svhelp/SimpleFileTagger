@@ -14,6 +14,7 @@ namespace Core
         public CoreMapperProfile()
         {
             CreateMap<LocationEntity, TaggerDirectoryInfo>();
+            CreateMap<LocationEntity, LocationModel>();
             CreateMap<TagEntity, TagModel>();
             CreateMap<TagGroupEntity, TagGroupModel>();
             CreateMap<ThumbnailEntity, ThumbnailModel>();
