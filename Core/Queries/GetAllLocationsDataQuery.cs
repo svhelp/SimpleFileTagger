@@ -13,17 +13,13 @@ namespace Core.Queries
     public class GetAllLocationsDataQuery : QueryBase<EmptyQueryModel, IEnumerable<TaggerDirectoryInfo>>
     {
         public GetAllLocationsDataQuery(TaggerContext context, IMapper mapper)
+            : base(mapper, context)
         {
-            Context = context;
-            Mapper = mapper;
         }
-
-        private IMapper Mapper { get; }
-        private TaggerContext Context { get; }
 
         public override IEnumerable<TaggerDirectoryInfo> Run(EmptyQueryModel model)
         {
-            var locations = Context.Locations.AsQueryable();
+            var locations = Context.Locations.Where(l => l.ParentId == null).AsQueryable();
 
             return Mapper.Map<List<TaggerDirectoryInfo>>(locations);
         }

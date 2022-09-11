@@ -13,13 +13,9 @@ namespace Core.Queries
     public class GetLocationDataQuery : QueryBase<string, TaggerDirectoryInfo>
     {
         public GetLocationDataQuery(IMapper mapper, TaggerContext context)
+            : base(mapper, context)
         {
-            Mapper = mapper;
-            Context = context;
         }
-
-        private IMapper Mapper { get; }
-        private TaggerContext Context { get; }
 
         public override TaggerDirectoryInfo Run(string path)
         {
