@@ -36,6 +36,16 @@ namespace Core.Processors
             }
         }
 
+        public void RemoveBeacon()
+        {
+            if (!File.Exists(BeaconPath))
+            {
+                return;
+            }
+
+            File.Delete(BeaconPath);
+        }
+
         public Guid? GetExistingBeacon()
         {
             if (!File.Exists(BeaconPath))
