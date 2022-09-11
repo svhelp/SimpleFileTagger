@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Core;
 using Core.Commands.LocationTags;
+using Core.Commands.TagGroups;
 using Core.Commands.Tags;
+using Core.Commands.Thumbnail;
 using Core.Queries;
 using DAL;
 using Microsoft.EntityFrameworkCore;
@@ -46,6 +48,8 @@ namespace SFTServer.Startup
             services.AddTransient<GetTagsQuery>();
             services.AddTransient<GetLocationDataQuery>();
             services.AddTransient<GetAllLocationsDataQuery>();
+            services.AddTransient<GetThumbnailQuery>();
+            services.AddTransient<SearchLocationsQuery>();
 
             return services;
         }
@@ -56,9 +60,18 @@ namespace SFTServer.Startup
             services.AddTransient<CreateTagCommand>();
             services.AddTransient<RemoveTagCommand>();
             services.AddTransient<MergeTagsCommand>();
+
+            services.AddTransient<AddTagToGroupCommand>();
+            services.AddTransient<RemoveGroupCommand>();
+            services.AddTransient<RemoveTagFromGroupCommand>();
+
             services.AddTransient<AddLocationTagCommand>();
             services.AddTransient<SetLocationTagsCommand>();
+            services.AddTransient<RemoveLocationCommand>();
             services.AddTransient<RemoveLocationTagCommand>();
+
+            services.AddTransient<SetThumbnailCommand>();
+            services.AddTransient<RemoveThumbnailCommand>();
 
             return services;
         }

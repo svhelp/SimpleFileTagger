@@ -13,13 +13,14 @@ namespace SFTServer.Controllers
     [ApiController]
     public class LocationController : ControllerBase
     {
-        public LocationController(GetLocationDataQuery getLocationDataQuery, GetAllLocationsDataQuery getAllLocationsDataQuery, AddLocationTagCommand addLocationTagCommand, SetLocationTagsCommand setLocationTagsCommand, RemoveLocationTagCommand removeLocationTagCommand)
+        public LocationController(GetLocationDataQuery getLocationDataQuery, GetAllLocationsDataQuery getAllLocationsDataQuery, AddLocationTagCommand addLocationTagCommand, SetLocationTagsCommand setLocationTagsCommand, RemoveLocationTagCommand removeLocationTagCommand, RemoveLocationCommand removeLocationCommand)
         {
             GetLocationDataQuery = getLocationDataQuery;
             GetAllLocationsDataQuery = getAllLocationsDataQuery;
             AddLocationTagCommand = addLocationTagCommand;
             SetLocationTagsCommand = setLocationTagsCommand;
             RemoveLocationTagCommand = removeLocationTagCommand;
+            RemoveLocationCommand = removeLocationCommand;
         }
 
         private GetLocationDataQuery GetLocationDataQuery { get; }
@@ -27,39 +28,42 @@ namespace SFTServer.Controllers
         private AddLocationTagCommand AddLocationTagCommand { get; }
         private SetLocationTagsCommand SetLocationTagsCommand { get; }
         private RemoveLocationTagCommand RemoveLocationTagCommand { get; }
+        private RemoveLocationCommand RemoveLocationCommand { get; }
 
         [HttpGet]
         public TaggerDirectoryInfo Get(string path)
         {
-            var data = GetLocationDataQuery.Run(path);
-
-            return data;
+            return GetLocationDataQuery.Run(path);
         }
 
         [HttpGet]
         public IEnumerable<TaggerDirectoryInfo> All()
         {
-            var data = GetAllLocationsDataQuery.Run(new EmptyQueryModel());
-
-            return data;
+            return GetAllLocationsDataQuery.Run(new EmptyQueryModel());
         }
 
         [HttpPut]
-        public void AddTags(UpdateLocationCommandModel model)
+        public CommandResultWith<UpdateLocationCommandResultModel> AddTags(UpdateLocationCommandModel model)
         {
-            AddLocationTagCommand.Run(model);
+            return AddLocationTagCommand.Run(model);
         }
 
         [HttpPut]
-        public void SetTags(UpdateLocationCommandModel model)
+        public CommandResultWith<UpdateLocationCommandResultModel> SetTags(UpdateLocationCommandModel model)
         {
-            SetLocationTagsCommand.Run(model);
+            return SetLocationTagsCommand.Run(model);
         }
 
         [HttpPut]
-        public void RemoveTags(UpdateLocationCommandModel model)
+        public CommandResult RemoveTags(UpdateLocationCommandModel model)
         {
-            RemoveLocationTagCommand.Run(model);
+            return RemoveLocationTagCommand.Run(model);
+        }
+
+        [HttpDelete]
+        public CommandResult Remove(Guid id)
+        {
+            return RemoveLocationCommand.Run(id);
         }
     }
 }

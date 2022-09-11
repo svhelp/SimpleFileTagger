@@ -5,7 +5,6 @@ using Core.Commands.Tags;
 using Core.Queries;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace SFTServer.Controllers
 {
@@ -30,27 +29,25 @@ namespace SFTServer.Controllers
         [HttpGet]
         public IEnumerable<TagModel> Get()
         {
-            var result = GetTagsQuery.Run(null);
-
-            return result;
+            return GetTagsQuery.Run(null);
         }
 
         [HttpPost]
-        public void Create(SimpleNamedModel model)
+        public CommandResultWith<Guid> Create(SimpleNamedModel model)
         {
-            CreateTagCommand.Run(model);
+            return CreateTagCommand.Run(model);
         }
 
         [HttpDelete]
-        public void Remove(Guid id)
+        public CommandResult Remove(Guid id)
         {
-            RemoveTagCommand.Run(id);
+            return RemoveTagCommand.Run(id);
         }
 
         [HttpPut]
-        public void Merge(MergeTagsCommandModel model)
+        public CommandResult Merge(MergeTagsCommandModel model)
         {
-            MergeTagsCommand.Run(model);
+            return MergeTagsCommand.Run(model);
         }
     }
 }
