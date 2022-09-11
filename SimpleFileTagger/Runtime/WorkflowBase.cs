@@ -5,7 +5,9 @@ using Core.Commands.LocationTags;
 using Core.Importers;
 using Core.Processors;
 using Core.Queries;
+using DAL;
 using DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,7 +20,8 @@ namespace SimpleFileTagger.Runtime
 {
     internal abstract class WorkflowBase
     {
-        private readonly Regex CommandParser = new Regex("^\"?(.+?)\"? -(r|a|s|d|rr|na|import|add|set|delete|location)( (.*))?$");
+        private readonly Regex CommandParser = new Regex("^\"?(.+?)\"? -(r|a|s|d|rr|na|import|add|set|delete)( (.*))?$");
+        private string[] LegacyCommands = new string[] { "r", "a", "s", "d", "rr", "na" };
 
         protected CommandDTO ParseCommand(string command)
         {
@@ -38,6 +41,17 @@ namespace SimpleFileTagger.Runtime
         }
 
         protected void RunCommand(CommandDTO command)
+        {
+            if (LegacyCommands.Contains(command.CommandType))
+            {
+                RunLegacyCommand(command);
+                return;
+            }
+
+            RunDbCommand(command);
+        }
+
+        protected void RunLegacyCommand(CommandDTO command)
         {
             switch (command.CommandType)
             {
@@ -74,51 +88,43 @@ namespace SimpleFileTagger.Runtime
                         TagsWriter.AddDirectoryNameTags(command.Path);
                         break;
                     }
+            }
+        }
+
+        protected void RunDbCommand(CommandDTO command)
+        {
+            using var context = new TaggerContext();
+
+            switch (command.CommandType)
+            {
                 case "import":
                     {
-                        LegacyDataImporter.ImportRootDitectory(command.Path);
+                        var legacyDataImporter = new LegacyDataImporter(context);
+                        legacyDataImporter.ImportRootDitectory(command.Path);
                         break;
                     }
                 case "add":
                     {
-                        var action = new AddLocationTagCommand();
+                        var action = new AddLocationTagCommand(context);
                         var model = new UpdateTagsCommandModel { Path = command.Path, Tags = command.Tags };
                         action.Run(model);
                         break;
                     }
                 case "set":
                     {
-                        var action = new SetLocationTagsCommand();
+                        var action = new SetLocationTagsCommand(context);
                         var model = new UpdateTagsCommandModel { Path = command.Path, Tags = command.Tags };
                         action.Run(model);
                         break;
                     }
                 case "delete":
                     {
-                        var action = new RemoveLocationTagCommand();
+                        var action = new RemoveLocationTagCommand(context);
                         var model = new UpdateTagsCommandModel { Path = command.Path, Tags = command.Tags };
                         action.Run(model);
                         break;
                     }
-                case "location":
-                    {
-                        PrintLocationInfoRecursively(command.Path);
-                        break;
-                    }
             }
-        }
-        private static void PrintLocationInfoRecursively(string path)
-        {
-            var query = new GetLocationDataQuery();
-            var data = query.Run(path);
-
-            if (data == null)
-            {
-                Console.WriteLine("The location is not tracked yet.");
-                return;
-            }
-
-            PrintLocationInfo(data);
         }
 
         private static void PrintLocationInfo(TaggerDirectoryInfo directoryInfo)

@@ -12,11 +12,16 @@ namespace Core.Importers
 {
     public class LegacyDataImporter
     {
-        static public void ImportRootDitectory(string rootPath)
+        public LegacyDataImporter(TaggerContext context)
         {
-            using var context = new TaggerContext();
-            var existingTags = context.Tags.AsQueryable().ToList();
-            var existingLocations = new List<LocationEntity>();
+            Context = context;
+        }
+
+        private TaggerContext Context { get; }
+
+        public void ImportRootDitectory(string rootPath)
+        {
+            var existingTags = Context.Tags.AsQueryable().ToList();
 
             var pathMap = new Dictionary<string, LocationEntity>();
 
@@ -43,8 +48,8 @@ namespace Core.Importers
                 pathMap.Add(directory.Key, locationData);
             }
 
-            context.Roots.Add(root);
-            context.SaveChanges();
+            Context.Roots.Add(root);
+            Context.SaveChanges();
         }
 
         private static LocationEntity GetDirectoryDbData(

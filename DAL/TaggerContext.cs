@@ -33,6 +33,11 @@ namespace DAL
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            if (optionsBuilder.IsConfigured)
+            {
+                return;
+            }
+
             var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             var dbFile = Path.Combine(appData, "FileTagger", "tagger.db");
 
