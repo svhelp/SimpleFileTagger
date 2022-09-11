@@ -45,19 +45,19 @@ namespace SFTServer.Controllers
         }
 
         [HttpPut]
-        public void AddTags(UpdateTagsCommandModel model)
+        public void AddTags(UpdateLocationCommandModel model)
         {
             AddLocationTagCommand.Run(model);
         }
 
         [HttpPut]
-        public void SetTags(UpdateTagsCommandModel model)
+        public void SetTags(UpdateLocationCommandModel model)
         {
             SetLocationTagsCommand.Run(model);
         }
 
         [HttpPut]
-        public void RemoveTags(UpdateTagsCommandModel model)
+        public void RemoveTags(UpdateLocationCommandModel model)
         {
             RemoveLocationTagCommand.Run(model);
         }

@@ -12,14 +12,14 @@ using System.Threading.Tasks;
 
 namespace Core.Commands.LocationTags
 {
-    public class RemoveLocationTagCommand : LocationTagsCommandBase<UpdateTagsCommandModel, CommandResult>
+    public class RemoveLocationTagCommand : LocationTagsCommandBase<UpdateLocationCommandModel, CommandResult>
     {
         public RemoveLocationTagCommand(TaggerContext context)
             : base(context)
         {
         }
 
-        public override CommandResult Run(UpdateTagsCommandModel model)
+        public override CommandResult Run(UpdateLocationCommandModel model)
         {
             ProcessLocation(Context, model.Path, location => RemoveTags(location, model.Tags));
 

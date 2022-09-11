@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Contracts.CommandModels
 {
-    public class UpdateLocationCommandModel
+    public class UpdateGroupCommandModel
     {
-        public string Path { get; set; }
+        public string GroupName { get; set; }
 
-        public string[] Tags { get; set; }
+        public List<Guid> TagIds { get; set; }
     }
 }

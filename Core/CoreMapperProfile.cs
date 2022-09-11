@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Contracts.CommandModels;
 using Contracts.Models;
 using DAL.Entities;
 using System;
@@ -13,11 +14,15 @@ namespace Core
     {
         public CoreMapperProfile()
         {
+            CreateMap<LocationEntity, UpdateLocationCommandResultModel>();
+            CreateMap<TagGroupEntity, UpdateGroupTagsCommandResultModel>();
+
             CreateMap<LocationEntity, TaggerDirectoryInfo>();
-            CreateMap<LocationEntity, LocationModel>();
             CreateMap<TagEntity, TagModel>();
             CreateMap<TagGroupEntity, TagGroupModel>();
             CreateMap<ThumbnailEntity, ThumbnailModel>();
+
+            CreateMap<TagEntity, SimpleModel>();
         }
     }
 }

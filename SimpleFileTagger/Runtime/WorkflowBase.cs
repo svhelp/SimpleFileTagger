@@ -106,21 +106,21 @@ namespace SimpleFileTagger.Runtime
                 case "add":
                     {
                         var action = new AddLocationTagCommand(context);
-                        var model = new UpdateTagsCommandModel { Path = command.Path, Tags = command.Tags };
+                        var model = new UpdateLocationCommandModel { Path = command.Path, Tags = command.Tags };
                         action.Run(model);
                         break;
                     }
                 case "set":
                     {
                         var action = new SetLocationTagsCommand(context);
-                        var model = new UpdateTagsCommandModel { Path = command.Path, Tags = command.Tags };
+                        var model = new UpdateLocationCommandModel { Path = command.Path, Tags = command.Tags };
                         action.Run(model);
                         break;
                     }
                 case "delete":
                     {
                         var action = new RemoveLocationTagCommand(context);
-                        var model = new UpdateTagsCommandModel { Path = command.Path, Tags = command.Tags };
+                        var model = new UpdateLocationCommandModel { Path = command.Path, Tags = command.Tags };
                         action.Run(model);
                         break;
                     }

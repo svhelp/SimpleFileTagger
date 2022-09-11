@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Contracts.Models;
 
-namespace Contracts.Models
+namespace Contracts.CommandModels
 {
-    public class LocationModel : ModelBase
+    public class UpdateLocationCommandResultModel : ModelBase
     {
         public string Path { get; set; }
 
