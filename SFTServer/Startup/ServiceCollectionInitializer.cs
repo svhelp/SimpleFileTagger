@@ -13,6 +13,14 @@ namespace SFTServer.Startup
 {
     public static class ServiceCollectionInitializer
     {
+        public static IServiceCollection AddSwagger(
+             this IServiceCollection services)
+        {
+            services.AddSwaggerDocument();
+
+            return services;
+        }
+
         public static IServiceCollection AddContext(
              this IServiceCollection services)
         {

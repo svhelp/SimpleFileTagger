@@ -15,7 +15,5 @@ namespace Contracts.Models
         public List<TaggerDirectoryInfo> Children { get; set; } = new List<TaggerDirectoryInfo>();
 
         public List<TagModel> Tags { get; set; } = new List<TagModel>();
-
-        public List<SimpleModel> Groups { get; set; } = new List<SimpleModel>();
     }
 }

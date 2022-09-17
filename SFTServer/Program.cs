@@ -10,6 +10,7 @@ namespace SFTServer
 
             // Add services to the container.
             builder.Services.AddContext()
+                .AddSwagger()
                 .AddMapper()
                 .AddQueries()
                 .AddCommands()
@@ -23,6 +24,9 @@ namespace SFTServer
 
             app.UseCors(builder => builder.AllowAnyOrigin());
             app.MapControllers();
+
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
 
             app.Run();
         }
