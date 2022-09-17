@@ -1,5 +1,7 @@
-﻿using Contracts.CommandModels;
+﻿using AutoMapper;
+using Contracts.CommandModels;
 using Contracts.Models;
+using Core;
 using Core.Commands;
 using Core.Commands.LocationTags;
 using Core.Importers;
@@ -94,6 +96,12 @@ namespace SimpleFileTagger.Runtime
         protected void RunDbCommand(CommandDTO command)
         {
             using var context = new TaggerContext();
+            var mapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<CoreMapperProfile>();
+            });
+
+            var mapper = mapperConfig.CreateMapper();
 
             switch (command.CommandType)
             {
@@ -105,14 +113,14 @@ namespace SimpleFileTagger.Runtime
                     }
                 case "add":
                     {
-                        var action = new AddLocationTagCommand(context);
+                        var action = new AddLocationTagCommand(context, mapper);
                         var model = new UpdateLocationCommandModel { Path = command.Path, Tags = command.Tags };
                         action.Run(model);
                         break;
                     }
                 case "set":
                     {
-                        var action = new SetLocationTagsCommand(context);
+                        var action = new SetLocationTagsCommand(context, mapper);
                         var model = new UpdateLocationCommandModel { Path = command.Path, Tags = command.Tags };
                         action.Run(model);
                         break;
