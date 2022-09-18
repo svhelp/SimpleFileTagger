@@ -33,7 +33,7 @@ namespace SFTServer.Controllers
         private GetThumbnailQuery GetThumbnailQuery { get; }
 
         [HttpGet]
-        public ThumbnailModel Get(Guid id)
+        public ThumbnailModel Get([FromQuery] Guid id)
         {
             return GetThumbnailQuery.Run(id);
         }

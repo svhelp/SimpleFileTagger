@@ -31,7 +31,7 @@ namespace SFTServer.Controllers
         private RemoveLocationCommand RemoveLocationCommand { get; }
 
         [HttpGet]
-        public TaggerDirectoryInfo Get(string path)
+        public TaggerDirectoryInfo Get([FromQuery] string path)
         {
             return GetLocationDataQuery.Run(path);
         }
@@ -61,7 +61,7 @@ namespace SFTServer.Controllers
         }
 
         [HttpDelete]
-        public CommandResult Remove(Guid id)
+        public CommandResult Remove([FromQuery] Guid id)
         {
             return RemoveLocationCommand.Run(id);
         }

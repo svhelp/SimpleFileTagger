@@ -39,7 +39,7 @@ namespace SFTServer.Controllers
         }
 
         [HttpDelete]
-        public CommandResult Remove(Guid id)
+        public CommandResult Remove([FromQuery] Guid id)
         {
             return RemoveTagCommand.Run(id);
         }

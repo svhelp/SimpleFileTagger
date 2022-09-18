@@ -21,8 +21,15 @@ namespace Core.Queries
         public override IEnumerable<TaggerDirectoryInfo> Run(string[] model)
         {
             var tags = Context.Tags.Where(t => model.Contains(t.Name)).ToList();
-            var locations = tags.Aggregate(new List<LocationEntity>(),
-                (acc, t) => acc.Intersect(t.Locations).ToList());
+
+            if (!tags.Any())
+            {
+                return new List<TaggerDirectoryInfo>();
+            }
+
+            var locations = tags.Skip(1)
+                .Aggregate(tags[0].Locations,
+                    (acc, t) => acc.Intersect(t.Locations).ToList());
 
             return Mapper.Map<List<TaggerDirectoryInfo>>(locations);
         }

@@ -17,7 +17,7 @@ namespace SFTServer.Controllers
         private SearchLocationsQuery SearchLocationsQuery { get; }
 
         [HttpGet]
-        public IEnumerable<TaggerDirectoryInfo> Get(string[] tags)
+        public IEnumerable<TaggerDirectoryInfo> Get([FromQuery] string[] tags)
         {
             return SearchLocationsQuery.Run(tags);
         }
