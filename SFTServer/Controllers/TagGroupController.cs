@@ -33,7 +33,7 @@ namespace SFTServer.Controllers
         }
 
         [HttpPut]
-        public CommandResultWith<UpdateLocationCommandModel> Add(UpdateGroupCommandModel model)
+        public CommandResultWith<UpdateGroupTagsCommandResultModel> Add(UpdateGroupCommandModel model)
         {
             return AddTagToGroupCommand.Run(model);
         }

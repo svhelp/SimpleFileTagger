@@ -54,6 +54,7 @@ namespace SFTServer.Startup
              this IServiceCollection services)
         {
             services.AddTransient<GetTagsQuery>();
+            services.AddTransient<GetTagGroupsQuery>();
             services.AddTransient<GetLocationDataQuery>();
             services.AddTransient<GetAllLocationsDataQuery>();
             services.AddTransient<GetThumbnailQuery>();

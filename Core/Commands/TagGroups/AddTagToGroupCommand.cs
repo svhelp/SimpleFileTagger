@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Core.Commands.TagGroups
 {
-    public class AddTagToGroupCommand : CommandBase<UpdateGroupCommandModel, CommandResultWith<UpdateLocationCommandModel>>
+    public class AddTagToGroupCommand : CommandBase<UpdateGroupCommandModel, CommandResultWith<UpdateGroupTagsCommandResultModel>>
     {
         public AddTagToGroupCommand(TaggerContext context, IMapper mapper) : base(context)
         {
@@ -19,7 +19,7 @@ namespace Core.Commands.TagGroups
 
         private IMapper Mapper { get; }
 
-        public override CommandResultWith<UpdateLocationCommandModel> Run(UpdateGroupCommandModel model)
+        public override CommandResultWith<UpdateGroupTagsCommandResultModel> Run(UpdateGroupCommandModel model)
         {
             var group = Context.TagGroups.FirstOrDefault(g => g.Name == model.GroupName)
                 ?? new TagGroupEntity
@@ -43,7 +43,7 @@ namespace Core.Commands.TagGroups
 
             Context.SaveChanges();
 
-            var result = Mapper.Map<UpdateLocationCommandModel>(group);
+            var result = Mapper.Map<UpdateGroupTagsCommandResultModel>(group);
 
             return GetSuccessfulResult(result);
         }
