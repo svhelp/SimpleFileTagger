@@ -1,4 +1,5 @@
 ﻿using Contracts.Models;
+using Contracts.Models.Plain;
 using Core.Queries;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ namespace SFTServer.Controllers
         private SearchLocationsQuery SearchLocationsQuery { get; }
 
         [HttpGet]
-        public IEnumerable<TaggerDirectoryInfo> Get([FromQuery] string[] tags)
+        public IEnumerable<LocationPlainModel> Get([FromQuery] string[] tags)
         {
             return SearchLocationsQuery.Run(tags);
         }

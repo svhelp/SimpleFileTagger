@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Contracts.Models
+namespace Contracts.Models.Plain
 {
-    public class ThumbnailModel : ModelBase
+    public class ThumbnailPlainModel : ModelBase
     {
         public byte[] Image { get; set; }
     }

@@ -1,4 +1,4 @@
-﻿using Contracts.Models;
+﻿using Contracts.Models.Legacy;
 using DAL;
 using DAL.Entities;
 using System;

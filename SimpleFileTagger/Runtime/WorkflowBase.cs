@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Contracts.CommandModels;
-using Contracts.Models;
+using Contracts.Models.Legacy;
 using Core;
 using Core.Commands;
 using Core.Commands.LocationTags;
@@ -10,6 +10,7 @@ using Core.Queries;
 using DAL;
 using DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using SimpleFileTagger.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;

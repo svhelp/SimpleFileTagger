@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Core.Processors;
+using Contracts.Models.Legacy;
 
 namespace Core.Importers
 {
@@ -69,7 +70,7 @@ namespace Core.Importers
             };
         }
 
-        private static List<TagEntity> GetOrCreateTags(List<TagEntity> existingTags, List<TagModel> tags)
+        private static List<TagEntity> GetOrCreateTags(List<TagEntity> existingTags, List<SimpleModel> tags)
         {
             var tagEntities = new List<TagEntity>();
 

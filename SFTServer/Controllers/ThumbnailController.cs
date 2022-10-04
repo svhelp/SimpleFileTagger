@@ -1,5 +1,5 @@
 ﻿using Contracts.CommandModels;
-using Contracts.Models;
+using Contracts.Models.Plain;
 using Core.Commands;
 using Core.Commands.Tags;
 using Core.Commands.Thumbnail;
@@ -33,7 +33,7 @@ namespace SFTServer.Controllers
         private GetThumbnailQuery GetThumbnailQuery { get; }
 
         [HttpGet]
-        public ThumbnailModel Get([FromQuery] Guid id)
+        public ThumbnailPlainModel Get([FromQuery] Guid id)
         {
             return GetThumbnailQuery.Run(id);
         }

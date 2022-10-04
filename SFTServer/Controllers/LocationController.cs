@@ -1,5 +1,6 @@
 ﻿using Contracts.CommandModels;
 using Contracts.Models;
+using Contracts.Models.Complex;
 using Contracts.QueryModel;
 using Core.Commands;
 using Core.Commands.LocationTags;
@@ -31,13 +32,13 @@ namespace SFTServer.Controllers
         private RemoveLocationCommand RemoveLocationCommand { get; }
 
         [HttpGet]
-        public TaggerDirectoryInfo Get([FromQuery] string path)
+        public LocationModel Get([FromQuery] string path)
         {
             return GetLocationDataQuery.Run(path);
         }
 
         [HttpGet]
-        public IEnumerable<TaggerDirectoryInfo> All()
+        public IEnumerable<LocationModel> All()
         {
             return GetAllLocationsDataQuery.Run(new EmptyQueryModel());
         }

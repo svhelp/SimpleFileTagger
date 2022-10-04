@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Contracts.Models
+namespace Contracts.Models.Plain
 {
-    public class SimpleModel : ModelBase
+    public class TagGroupPlainModel : SimpleModel
     {
-        public string Name { get; set; }
+        public List<Guid> TagIds { get; set; }
     }
 }

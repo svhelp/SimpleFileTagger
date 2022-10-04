@@ -1,5 +1,6 @@
 ﻿using Contracts.CommandModels;
 using Contracts.Models;
+using Contracts.Models.Plain;
 using Core.Commands;
 using Core.Commands.TagGroups;
 using Core.Commands.Tags;
@@ -27,7 +28,7 @@ namespace SFTServer.Controllers
         private GetTagGroupsQuery GetTagGroupsQuery { get; }
 
         [HttpGet]
-        public IEnumerable<TagGroupModel> Get()
+        public IEnumerable<TagGroupPlainModel> Get()
         {
             return GetTagGroupsQuery.Run(null);
         }

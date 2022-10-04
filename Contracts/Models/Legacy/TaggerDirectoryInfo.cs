@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Contracts.Models
+namespace Contracts.Models.Legacy
 {
     public class TaggerDirectoryInfo : ModelBase
     {
@@ -14,6 +14,6 @@ namespace Contracts.Models
 
         public List<TaggerDirectoryInfo> Children { get; set; } = new List<TaggerDirectoryInfo>();
 
-        public List<TagModel> Tags { get; set; } = new List<TagModel>();
+        public List<SimpleModel> Tags { get; set; } = new List<SimpleModel>();
     }
 }

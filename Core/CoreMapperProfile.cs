@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Contracts.CommandModels;
 using Contracts.Models;
+using Contracts.Models.Complex;
+using Contracts.Models.Plain;
 using DAL.Entities;
 using System;
 using System.Collections.Generic;
@@ -17,12 +19,16 @@ namespace Core
             CreateMap<LocationEntity, UpdateLocationCommandResultModel>();
             CreateMap<TagGroupEntity, UpdateGroupTagsCommandResultModel>();
 
-            CreateMap<LocationEntity, TaggerDirectoryInfo>();
-            CreateMap<TagEntity, TagModel>();
-            CreateMap<TagGroupEntity, TagGroupModel>();
-            CreateMap<ThumbnailEntity, ThumbnailModel>();
+            CreateMap<LocationEntity, LocationModel>()
+                .ForMember(x => x.TagIds, opt => opt.MapFrom(z => z.Tags.Select(t => t.Id)));
 
-            CreateMap<TagEntity, SimpleModel>();
+            CreateMap<ThumbnailEntity, ThumbnailPlainModel>();
+            CreateMap<TagEntity, TagPlainModel>()
+                .ForMember(x => x.ThumbnailId, opt => opt.MapFrom(z => z.Thumbnail != null ? z.Thumbnail.Id : default));
+            CreateMap<TagGroupEntity, TagGroupPlainModel>()
+                .ForMember(x => x.TagIds, opt => opt.MapFrom(z => z.Tags.Select(t => t.Id)));
+            CreateMap<LocationEntity, LocationPlainModel>()
+                .ForMember(x => x.TagIds, opt => opt.MapFrom(z => z.Tags.Select(t => t.Id)));
         }
     }
 }

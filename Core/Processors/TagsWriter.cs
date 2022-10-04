@@ -1,4 +1,5 @@
 ﻿using Contracts.Models;
+using Contracts.Models.Legacy;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,21 +14,21 @@ namespace Core.Processors
     {
         static public void SetDirectoryInfo(string path, IEnumerable<string> tags)
         {
-            var convertedTags = tags.Select(t => new TagModel { Name = t }).ToList();
+            var convertedTags = tags.Select(t => new SimpleModel { Name = t }).ToList();
 
             SetDirectoryInfo(path, convertedTags);
         }
 
         static public void AddDirectoryInfo(string path, IEnumerable<string> tags)
         {
-            var convertedTags = tags.Select(t => new TagModel { Name = t }).ToList();
+            var convertedTags = tags.Select(t => new SimpleModel { Name = t }).ToList();
 
             AddDirectoryInfo(path, convertedTags);
         }
 
         static public void RemoveDirectoryInfo(string path, IEnumerable<string> tags)
         {
-            var convertedTags = tags.Select(t => new TagModel { Name = t }).ToList();
+            var convertedTags = tags.Select(t => new SimpleModel { Name = t }).ToList();
 
             RemoveDirectoryInfo(path, convertedTags);
         }
@@ -39,17 +40,17 @@ namespace Core.Processors
             foreach (var innerDirectory in innerDirectories)
             {
                 var name = innerDirectory.Split("/").Last();
-                var tag = new TagModel
+                var tag = new SimpleModel
                 {
                     Name = name,
                 };
 
-                SetDirectoryInfo(name, new List<TagModel> { tag });
+                SetDirectoryInfo(name, new List<SimpleModel> { tag });
             }
         }
 
 
-        static private void SetDirectoryInfo(string path, List<TagModel> tags)
+        static private void SetDirectoryInfo(string path, List<SimpleModel> tags)
         {
             ProcessDirectoryInfo(path, (currentTags) => new TaggerDirectoryInfo
             {
@@ -57,7 +58,7 @@ namespace Core.Processors
             });
         }
 
-        static private void AddDirectoryInfo(string path, List<TagModel> tags)
+        static private void AddDirectoryInfo(string path, List<SimpleModel> tags)
         {
             ProcessDirectoryInfo(path, (currentTags) => new TaggerDirectoryInfo
             {
@@ -65,7 +66,7 @@ namespace Core.Processors
             });
         }
 
-        static private void RemoveDirectoryInfo(string path, List<TagModel> tags)
+        static private void RemoveDirectoryInfo(string path, List<SimpleModel> tags)
         {
             ProcessDirectoryInfo(path, (currentTags) => new TaggerDirectoryInfo
             {
