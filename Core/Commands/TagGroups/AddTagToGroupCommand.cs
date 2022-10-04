@@ -1,7 +1,5 @@
-﻿using AutoMapper;
-using Contracts.CommandModels;
+﻿using Contracts.CommandModels;
 using DAL;
-using DAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,42 +8,33 @@ using System.Threading.Tasks;
 
 namespace Core.Commands.TagGroups
 {
-    public class AddTagToGroupCommand : CommandBase<UpdateGroupCommandModel, CommandResultWith<UpdateGroupTagsCommandResultModel>>
+    public class AddTagToGroupCommand : CommandBase<UpdateTagGroupRelationCommandModel, CommandResult>
     {
-        public AddTagToGroupCommand(TaggerContext context, IMapper mapper) : base(context)
+        public AddTagToGroupCommand(TaggerContext context) : base(context)
         {
-            Mapper = mapper;
         }
 
-        private IMapper Mapper { get; }
-
-        public override CommandResultWith<UpdateGroupTagsCommandResultModel> Run(UpdateGroupCommandModel model)
+        public override CommandResult Run(UpdateTagGroupRelationCommandModel model)
         {
-            var group = Context.TagGroups.FirstOrDefault(g => g.Name == model.GroupName)
-                ?? new TagGroupEntity
-                    {
-                        Name = model.GroupName,
-                        Tags = new List<TagEntity>()
-                    };
+            var group = Context.TagGroups.FirstOrDefault(g => g.Id == model.GroupId);
 
-            var existingTagIds = group.Tags.Select(t => t.Id).ToList();
-            var tagsToAdd = Context.Tags.Where(t => !existingTagIds.Contains(t.Id) && model.TagIds.Contains(t.Id));
-
-            foreach (var tag in tagsToAdd)
+            if (group == null)
             {
-                group.Tags.Add(tag);
+                return GetErrorResult("Tag group not found.");
             }
 
-            if (group.Id == default)
+            var tagToAdd = Context.Tags.FirstOrDefault(t => t.Id == model.TagId);
+
+            if (tagToAdd == null)
             {
-                Context.TagGroups.Add(group);
+                return GetErrorResult("Tag with the Id does not exist.");
             }
+
+            group.Tags.Add(tagToAdd);
 
             Context.SaveChanges();
 
-            var result = Mapper.Map<UpdateGroupTagsCommandResultModel>(group);
-
-            return GetSuccessfulResult(result);
+            return GetSuccessfulResult();
         }
     }
 }

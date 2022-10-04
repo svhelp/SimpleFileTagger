@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace Contracts.CommandModels
 {
-    public class UpdateGroupCommandModel
+    public class UpdateTagGroupRelationCommandModel
     {
-        public Guid Id { get; set; }
+        public Guid GroupId { get; set; }
 
-        public string Name { get; set; }
-
-        public List<Guid> TagIds { get; set; }
+        public Guid TagId { get; set; }
     }
 }

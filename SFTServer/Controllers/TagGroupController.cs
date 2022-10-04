@@ -14,16 +14,18 @@ namespace SFTServer.Controllers
     [ApiController]
     public class TagGroupController : ControllerBase
     {
-        public TagGroupController(AddTagToGroupCommand addTagToGroupCommand, RemoveGroupCommand removeGroupCommand, RemoveTagFromGroupCommand removeTagFromGroupCommand, GetTagGroupsQuery getTagGroupsQuery)
+        public TagGroupController(AddOrUpdateGroupCommand addOrUpdateGroupCommand, RemoveGroupCommand removeGroupCommand, RemoveTagFromGroupCommand removeTagFromGroupCommand, GetTagGroupsQuery getTagGroupsQuery, AddTagToGroupCommand addTagToGroupCommand)
         {
-            AddTagToGroupCommand = addTagToGroupCommand;
+            AddOrUpdateGroupCommand = addOrUpdateGroupCommand;
             RemoveGroupCommand = removeGroupCommand;
             RemoveTagFromGroupCommand = removeTagFromGroupCommand;
             GetTagGroupsQuery = getTagGroupsQuery;
+            AddTagToGroupCommand = addTagToGroupCommand;
         }
 
-        private AddTagToGroupCommand AddTagToGroupCommand { get; }
+        private AddOrUpdateGroupCommand AddOrUpdateGroupCommand { get; }
         private RemoveGroupCommand RemoveGroupCommand { get; }
+        private AddTagToGroupCommand AddTagToGroupCommand { get; }
         private RemoveTagFromGroupCommand RemoveTagFromGroupCommand { get; }
         private GetTagGroupsQuery GetTagGroupsQuery { get; }
 
@@ -34,9 +36,9 @@ namespace SFTServer.Controllers
         }
 
         [HttpPut]
-        public CommandResultWith<UpdateGroupTagsCommandResultModel> Add(UpdateGroupCommandModel model)
+        public CommandResultWith<UpdateGroupTagsCommandResultModel> Update(UpdateGroupCommandModel model)
         {
-            return AddTagToGroupCommand.Run(model);
+            return AddOrUpdateGroupCommand.Run(model);
         }
 
         [HttpDelete]
@@ -46,7 +48,13 @@ namespace SFTServer.Controllers
         }
 
         [HttpPut]
-        public CommandResult RemoveTag(UpdateGroupCommandModel model)
+        public CommandResult AddTag(UpdateTagGroupRelationCommandModel model)
+        {
+            return AddTagToGroupCommand.Run(model);
+        }
+
+        [HttpPut]
+        public CommandResult RemoveTag(UpdateTagGroupRelationCommandModel model)
         {
             return RemoveTagFromGroupCommand.Run(model);
         }

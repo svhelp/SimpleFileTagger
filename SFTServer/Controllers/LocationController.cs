@@ -14,7 +14,7 @@ namespace SFTServer.Controllers
     [ApiController]
     public class LocationController : ControllerBase
     {
-        public LocationController(GetLocationDataQuery getLocationDataQuery, GetAllLocationsDataQuery getAllLocationsDataQuery, AddLocationTagCommand addLocationTagCommand, SetLocationTagsCommand setLocationTagsCommand, RemoveLocationTagCommand removeLocationTagCommand, RemoveLocationCommand removeLocationCommand)
+        public LocationController(GetLocationDataQuery getLocationDataQuery, GetAllLocationsDataQuery getAllLocationsDataQuery, AddLocationTagCommand addLocationTagCommand, SetLocationTagsCommand setLocationTagsCommand, RemoveLocationTagCommand removeLocationTagCommand, RemoveLocationCommand removeLocationCommand, CreateLocationCommand createLocationCommand)
         {
             GetLocationDataQuery = getLocationDataQuery;
             GetAllLocationsDataQuery = getAllLocationsDataQuery;
@@ -22,10 +22,12 @@ namespace SFTServer.Controllers
             SetLocationTagsCommand = setLocationTagsCommand;
             RemoveLocationTagCommand = removeLocationTagCommand;
             RemoveLocationCommand = removeLocationCommand;
+            CreateLocationCommand = createLocationCommand;
         }
 
         private GetLocationDataQuery GetLocationDataQuery { get; }
         private GetAllLocationsDataQuery GetAllLocationsDataQuery { get; }
+        private CreateLocationCommand CreateLocationCommand { get; }
         private AddLocationTagCommand AddLocationTagCommand { get; }
         private SetLocationTagsCommand SetLocationTagsCommand { get; }
         private RemoveLocationTagCommand RemoveLocationTagCommand { get; }
@@ -41,6 +43,12 @@ namespace SFTServer.Controllers
         public IEnumerable<LocationModel> All()
         {
             return GetAllLocationsDataQuery.Run(new EmptyQueryModel());
+        }
+
+        [HttpPost]
+        public CommandResult Create(SimpleNamedModel model)
+        {
+            return CreateLocationCommand.Run(model);
         }
 
         [HttpPut]

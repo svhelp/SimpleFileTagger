@@ -67,13 +67,16 @@ namespace SFTServer.Startup
              this IServiceCollection services)
         {
             services.AddTransient<CreateTagCommand>();
+            services.AddTransient<UpdateTagCommand>();
             services.AddTransient<RemoveTagCommand>();
             services.AddTransient<MergeTagsCommand>();
 
+            services.AddTransient<AddOrUpdateGroupCommand>();
+            services.AddTransient<RemoveGroupCommand>(); 
             services.AddTransient<AddTagToGroupCommand>();
-            services.AddTransient<RemoveGroupCommand>();
             services.AddTransient<RemoveTagFromGroupCommand>();
-
+            
+            services.AddTransient<CreateLocationCommand>();
             services.AddTransient<AddLocationTagCommand>();
             services.AddTransient<SetLocationTagsCommand>();
             services.AddTransient<RemoveLocationCommand>();
