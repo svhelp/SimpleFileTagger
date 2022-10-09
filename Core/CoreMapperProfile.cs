@@ -29,6 +29,8 @@ namespace Core
                 .ForMember(x => x.TagIds, opt => opt.MapFrom(z => z.Tags.Select(t => t.Id)));
             CreateMap<LocationEntity, LocationPlainModel>()
                 .ForMember(x => x.TagIds, opt => opt.MapFrom(z => z.Tags.Select(t => t.Id)));
+
+            CreateMap<TagEntity, SimpleModel>();
         }
     }
 }

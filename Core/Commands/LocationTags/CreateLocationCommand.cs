@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Core.Commands.LocationTags
 {
-    public class CreateLocationCommand : LocationTagsCommandBase<SimpleNamedModel, CommandResult>
+    public class CreateLocationCommand : LocationTagsCommandBase<SimpleNamedModel, CommandResultWith<UpdateLocationCommandResultModel>>
     {
         public CreateLocationCommand(TaggerContext context, IMapper mapper)
             : base(context)
@@ -20,7 +20,7 @@ namespace Core.Commands.LocationTags
 
         private IMapper Mapper { get; }
 
-        public override CommandResult Run(SimpleNamedModel model)
+        public override CommandResultWith<UpdateLocationCommandResultModel> Run(SimpleNamedModel model)
         {
             var updatedLocation = ProcessLocation(Context, model.Name, location => { });
             var result = Mapper.Map<UpdateLocationCommandResultModel>(updatedLocation);

@@ -46,7 +46,7 @@ namespace SFTServer.Controllers
         }
 
         [HttpPost]
-        public CommandResult Create(SimpleNamedModel model)
+        public CommandResultWith<UpdateLocationCommandResultModel> Create(SimpleNamedModel model)
         {
             return CreateLocationCommand.Run(model);
         }
