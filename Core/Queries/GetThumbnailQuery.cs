@@ -17,7 +17,7 @@ namespace Core.Queries
 
         public override ThumbnailPlainModel Run(Guid model)
         {
-            var thumbnail = Context.Thumbnails.FirstOrDefault(t => t.Id == model);
+            var thumbnail = Context.Thumbnails.FirstOrDefault(t => t.TagId == model);
 
             if (thumbnail == null)
             {

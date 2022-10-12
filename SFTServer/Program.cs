@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.Features;
 using SFTServer.Startup;
 
 namespace SFTServer
@@ -15,6 +16,11 @@ namespace SFTServer
                 .AddQueries()
                 .AddCommands()
                 .AddControllers();
+
+            builder.Services.Configure<FormOptions>(options =>
+            {
+                options.MultipartBodyLengthLimit = 15 * 1024 * 1024; //not recommended value
+            });
 
             var app = builder.Build();
 
