@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
-using Microsoft.Web.Helpers;
 using SFTServer.Filters;
 using SFTServer.Utilities;
 using System.Globalization;
