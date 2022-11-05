@@ -33,12 +33,6 @@ namespace Core.Importers
 
             pathMap.Add(rootDirectoryData.Key, rootDirectory);
 
-            var root = new RootEntity
-            {
-                Path = rootPath,
-                RootLocation = rootDirectory
-            };
-
             foreach (KeyValuePair<string, TaggerDirectoryInfo> directory in directoriesData.Skip(1))
             {
                 var locationData = GetDirectoryDbData(directory, existingTags, out string parentPath);
@@ -49,7 +43,7 @@ namespace Core.Importers
                 pathMap.Add(directory.Key, locationData);
             }
 
-            Context.Roots.Add(root);
+            Context.Locations.Add(rootDirectory);
             Context.SaveChanges();
         }
 

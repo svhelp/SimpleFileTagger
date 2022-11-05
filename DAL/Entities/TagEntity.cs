@@ -15,9 +15,9 @@ namespace DAL.Entities
         [ForeignKey(nameof(Group))]
         public Guid? GroupId { get; set; }
 
-        public virtual TagGroupEntity Group { get; set; }
+        public virtual TagGroupEntity? Group { get; set; }
 
-        public virtual ThumbnailEntity Thumbnail { get; set; }
+        public virtual ThumbnailEntity? Thumbnail { get; set; }
 
         public virtual ICollection<LocationEntity> Locations { get; set; }
     }

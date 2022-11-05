@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(TaggerContext))]
-    [Migration("20220826145727_Initial")]
+    [Migration("20221105182932_Initial2")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,36 +36,11 @@ namespace DAL.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("RootId")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ParentId");
 
-                    b.HasIndex("RootId");
-
                     b.ToTable("Locations");
-                });
-
-            modelBuilder.Entity("DAL.Entities.RootEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("RootLocationId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RootLocationId");
-
-                    b.ToTable("Roots");
                 });
 
             modelBuilder.Entity("DAL.Entities.TagEntity", b =>
@@ -94,9 +69,37 @@ namespace DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsRequired")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.ToTable("TagGroups");
+                });
+
+            modelBuilder.Entity("DAL.Entities.ThumbnailEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<byte[]>("Image")
+                        .IsRequired()
+                        .HasColumnType("BLOB");
+
+                    b.Property<Guid>("TagId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TagId")
+                        .IsUnique();
+
+                    b.ToTable("Thumbnails");
                 });
 
             modelBuilder.Entity("LocationEntityTagEntity", b =>
@@ -120,24 +123,7 @@ namespace DAL.Migrations
                         .WithMany("Children")
                         .HasForeignKey("ParentId");
 
-                    b.HasOne("DAL.Entities.RootEntity", "Root")
-                        .WithMany()
-                        .HasForeignKey("RootId");
-
                     b.Navigation("Parent");
-
-                    b.Navigation("Root");
-                });
-
-            modelBuilder.Entity("DAL.Entities.RootEntity", b =>
-                {
-                    b.HasOne("DAL.Entities.LocationEntity", "RootLocation")
-                        .WithMany()
-                        .HasForeignKey("RootLocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("RootLocation");
                 });
 
             modelBuilder.Entity("DAL.Entities.TagEntity", b =>
@@ -147,6 +133,17 @@ namespace DAL.Migrations
                         .HasForeignKey("GroupId");
 
                     b.Navigation("Group");
+                });
+
+            modelBuilder.Entity("DAL.Entities.ThumbnailEntity", b =>
+                {
+                    b.HasOne("DAL.Entities.TagEntity", "Tag")
+                        .WithOne("Thumbnail")
+                        .HasForeignKey("DAL.Entities.ThumbnailEntity", "TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tag");
                 });
 
             modelBuilder.Entity("LocationEntityTagEntity", b =>
@@ -167,6 +164,11 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Entities.LocationEntity", b =>
                 {
                     b.Navigation("Children");
+                });
+
+            modelBuilder.Entity("DAL.Entities.TagEntity", b =>
+                {
+                    b.Navigation("Thumbnail");
                 });
 
             modelBuilder.Entity("DAL.Entities.TagGroupEntity", b =>

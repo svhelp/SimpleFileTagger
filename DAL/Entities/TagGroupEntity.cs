@@ -10,6 +10,8 @@ namespace DAL.Entities
     {
         public string Name { get; set; }
 
+        public bool IsRequired { get; set; }
+
         public virtual ICollection<TagEntity> Tags { get; set; }
     }
 }
