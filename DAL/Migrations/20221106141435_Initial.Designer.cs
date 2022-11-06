@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(TaggerContext))]
-    [Migration("20221105182932_Initial2")]
+    [Migration("20221106141435_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -130,7 +130,8 @@ namespace DAL.Migrations
                 {
                     b.HasOne("DAL.Entities.TagGroupEntity", "Group")
                         .WithMany("Tags")
-                        .HasForeignKey("GroupId");
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Group");
                 });

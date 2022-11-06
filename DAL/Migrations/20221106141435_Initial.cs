@@ -56,7 +56,8 @@ namespace DAL.Migrations
                         name: "FK_Tags_TagGroups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "TagGroups",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(

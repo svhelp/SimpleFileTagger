@@ -128,7 +128,8 @@ namespace DAL.Migrations
                 {
                     b.HasOne("DAL.Entities.TagGroupEntity", "Group")
                         .WithMany("Tags")
-                        .HasForeignKey("GroupId");
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Group");
                 });

@@ -46,15 +46,10 @@ namespace DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<TagEntity>()
-            //    .HasOne(p => p.Group)
-            //    .WithMany(b => b.Tags)
-            //    .IsRequired(false);
-
-            //modelBuilder.Entity<TagEntity>()
-            //    .HasOne(p => p.Thumbnail)
-            //    .WithOne(t => t.Tag)
-            //    .IsRequired(false);
+            modelBuilder.Entity<TagEntity>()
+                .HasOne(p => p.Group)
+                .WithMany(b => b.Tags)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

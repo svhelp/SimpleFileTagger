@@ -21,7 +21,7 @@ namespace Core.Queries
 
             if (thumbnail == null)
             {
-                throw new Exception("Thumbnail not found");
+                return null;
             }
 
             return Mapper.Map<ThumbnailPlainModel>(thumbnail);
