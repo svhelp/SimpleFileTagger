@@ -12,6 +12,8 @@ namespace Contracts.CommandModels
 
         public string Name { get; set; }
 
+        public bool IsRequired { get; set; }
+
         public List<Guid> TagIds { get; set; }
     }
 }

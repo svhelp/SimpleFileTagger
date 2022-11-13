@@ -29,6 +29,8 @@ namespace DAL
 
         public DbSet<LocationEntity> Locations { get; set; }
 
+        public DbSet<SettingsEntity> Settings { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (optionsBuilder.IsConfigured)

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Core.Processors;
+using Core.Constants;
 
 namespace Core.Commands.LocationTags
 {
@@ -31,7 +32,9 @@ namespace Core.Commands.LocationTags
 
             context.SaveChanges();
 
-            if (beaconId == null)
+            var beaconSettings = context.Settings.FirstOrDefault(s => s.Code == SettingsCodes.Beacons);
+
+            if (beaconSettings != null && beaconSettings.Enabled && beaconId == null)
             {
                 beaconFileProcessor.CreateBeacon(location);
             }

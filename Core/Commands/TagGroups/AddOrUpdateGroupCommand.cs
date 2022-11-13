@@ -29,6 +29,7 @@ namespace Core.Commands.TagGroups
                     };
 
             group.Name = model.Name;
+            group.IsRequired = model.IsRequired;
 
             var existingTagIds = group.Tags.Select(t => t.Id).ToList();
             var tagsToAdd = Context.Tags.Where(t => !existingTagIds.Contains(t.Id) && model.TagIds.Contains(t.Id));
