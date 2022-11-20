@@ -46,12 +46,10 @@ namespace SimpleFileTagger
 
         private static void init()
         {
-            if (Directory.Exists(appDataPath))
+            if (!Directory.Exists(appDataPath))
             {
-                return;
+                Directory.CreateDirectory(appDataPath);
             }
-
-            Directory.CreateDirectory(appDataPath);
 
             using var context = new TaggerContext();
             context.Database.EnsureCreated();

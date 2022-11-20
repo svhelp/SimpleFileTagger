@@ -1,3 +1,4 @@
+using DAL;
 using Microsoft.AspNetCore.Http.Features;
 using SFTServer.Startup;
 
@@ -21,6 +22,8 @@ namespace SFTServer
             {
                 options.MultipartBodyLengthLimit = 15 * 1024 * 1024; //not recommended value
             });
+
+            DatabaseInitializer.Init();
 
             var app = builder.Build();
 
