@@ -52,6 +52,11 @@ namespace DAL
                 .HasOne(p => p.Group)
                 .WithMany(b => b.Tags)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<LocationEntity>()
+                .HasMany(p => p.Children)
+                .WithOne(b => b.Parent)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

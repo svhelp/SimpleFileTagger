@@ -15,7 +15,7 @@ namespace SFTServer.Controllers
 
         private LegacyDataImporter LegacyDataImporter { get; }
 
-        [HttpGet]
+        [HttpPatch]
         public CommandResult ImportDirectory([FromQuery] string path)
         {
             try

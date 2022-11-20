@@ -4,6 +4,7 @@ using Core.Commands.LocationTags;
 using Core.Commands.TagGroups;
 using Core.Commands.Tags;
 using Core.Commands.Thumbnail;
+using Core.Importers;
 using Core.Queries;
 using DAL;
 using Microsoft.EntityFrameworkCore;
@@ -66,6 +67,8 @@ namespace SFTServer.Startup
         public static IServiceCollection AddCommands(
              this IServiceCollection services)
         {
+            services.AddTransient<LegacyDataImporter>();
+
             services.AddTransient<CreateTagCommand>();
             services.AddTransient<UpdateTagCommand>();
             services.AddTransient<RemoveTagCommand>();
