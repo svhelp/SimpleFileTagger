@@ -1,11 +1,10 @@
 ﻿using Contracts.CommandModels;
-using Contracts.Models;
 using Contracts.Models.Complex;
 using Contracts.QueryModel;
 using Core.Commands;
+using Core.Commands.Locations;
 using Core.Commands.LocationTags;
 using Core.Queries;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SFTServer.Controllers
@@ -14,7 +13,7 @@ namespace SFTServer.Controllers
     [ApiController]
     public class LocationController : ControllerBase
     {
-        public LocationController(GetLocationDataQuery getLocationDataQuery, GetAllLocationsDataQuery getAllLocationsDataQuery, AddLocationTagCommand addLocationTagCommand, SetLocationTagsCommand setLocationTagsCommand, RemoveLocationTagCommand removeLocationTagCommand, RemoveLocationCommand removeLocationCommand, CreateLocationCommand createLocationCommand)
+        public LocationController(GetLocationDataQuery getLocationDataQuery, GetAllLocationsDataQuery getAllLocationsDataQuery, AddLocationTagCommand addLocationTagCommand, SetLocationTagsCommand setLocationTagsCommand, RemoveLocationTagCommand removeLocationTagCommand, RemoveLocationCommand removeLocationCommand, CreateLocationCommand createLocationCommand, MarkLocationsNotFoundCommand markLocationsNotFoundCommand)
         {
             GetLocationDataQuery = getLocationDataQuery;
             GetAllLocationsDataQuery = getAllLocationsDataQuery;
@@ -23,6 +22,7 @@ namespace SFTServer.Controllers
             RemoveLocationTagCommand = removeLocationTagCommand;
             RemoveLocationCommand = removeLocationCommand;
             CreateLocationCommand = createLocationCommand;
+            MarkLocationsNotFoundCommand = markLocationsNotFoundCommand;
         }
 
         private GetLocationDataQuery GetLocationDataQuery { get; }
@@ -32,6 +32,7 @@ namespace SFTServer.Controllers
         private SetLocationTagsCommand SetLocationTagsCommand { get; }
         private RemoveLocationTagCommand RemoveLocationTagCommand { get; }
         private RemoveLocationCommand RemoveLocationCommand { get; }
+        private MarkLocationsNotFoundCommand MarkLocationsNotFoundCommand { get; }
 
         [HttpGet]
         public LocationModel Get([FromQuery] string path)
@@ -73,6 +74,12 @@ namespace SFTServer.Controllers
         public CommandResult Remove([FromQuery] Guid id)
         {
             return RemoveLocationCommand.Run(id);
+        }
+
+        [HttpPatch]
+        public CommandResult MarkNotFound([FromQuery] List<Guid> locationIds)
+        {
+            return MarkLocationsNotFoundCommand.Run(locationIds);
         }
     }
 }

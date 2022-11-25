@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core;
+using Core.Commands.Locations;
 using Core.Commands.LocationTags;
 using Core.Commands.TagGroups;
 using Core.Commands.Tags;
@@ -68,6 +69,9 @@ namespace SFTServer.Startup
              this IServiceCollection services)
         {
             services.AddTransient<LegacyDataImporter>();
+            
+            services.AddTransient<VerifyLocationsCommand>();
+            services.AddTransient<MarkLocationsNotFoundCommand>();
 
             services.AddTransient<CreateTagCommand>();
             services.AddTransient<UpdateTagCommand>();

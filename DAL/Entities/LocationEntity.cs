@@ -14,6 +14,8 @@ namespace DAL.Entities
 
         public string Name { get; set; }
 
+        public bool NotFound { get; set; }
+
         [ForeignKey(nameof(Parent))]
         public Guid? ParentId { get; set; }
 

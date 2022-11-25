@@ -10,6 +10,8 @@ namespace Contracts.Models.Complex
     {
         public string Path { get; set; }
 
+        public bool NotFound { get; set; }
+
         public List<LocationModel> Children { get; set; }
 
         public List<Guid> TagIds { get; set; }

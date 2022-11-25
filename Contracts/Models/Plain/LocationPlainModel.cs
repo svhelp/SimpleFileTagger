@@ -11,6 +11,8 @@ namespace Contracts.Models.Plain
     {
         public string Path { get; set; }
 
+        public bool NotFound { get; set; }
+
         public List<Guid> TagIds { get; set; }
     }
 }
