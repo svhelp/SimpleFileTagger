@@ -1,4 +1,5 @@
-﻿using Contracts.Models;
+﻿using Contracts.CommandModels;
+using Contracts.Models;
 using DAL;
 using DAL.Entities;
 using System;
@@ -9,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace Core.Commands.Tags
 {
-    public class UpdateTagCommand : CommandBase<SimpleModel, CommandResult>
+    public class UpdateTagCommand : CommandBase<UpdateTagCommandModel, CommandResult>
     {
         public UpdateTagCommand(TaggerContext context) : base(context)
         {
         }
 
-        public override CommandResult Run(SimpleModel model)
+        public override CommandResult Run(UpdateTagCommandModel model)
         {
             var tagToUpdate = Context.Tags.FirstOrDefault(t => t.Id == model.Id);
 
@@ -25,6 +26,20 @@ namespace Core.Commands.Tags
             }
 
             tagToUpdate.Name = model.Name;
+
+            TagGroupEntity? group = null;
+
+            if (model.GroupId.HasValue)
+            {
+                group = Context.TagGroups.FirstOrDefault(gr => gr.Id == model.GroupId);
+
+                if (group == null)
+                {
+                    return GetErrorResult("Group not found.");
+                }
+            }
+
+            tagToUpdate.Group = group;
 
             Context.SaveChanges();
 

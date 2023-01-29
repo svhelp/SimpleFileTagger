@@ -8,8 +8,6 @@ namespace Contracts.Models.Plain
 {
     public class TagPlainModel : SimpleModel
     {
-        public Guid GroupId { get; set; }
-
         public Guid ThumbnailId { get; set; }
     }
 }

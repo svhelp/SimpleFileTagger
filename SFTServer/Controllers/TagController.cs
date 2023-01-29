@@ -42,7 +42,7 @@ namespace SFTServer.Controllers
         }
 
         [HttpPut]
-        public CommandResult Update([FromQuery] SimpleModel model)
+        public CommandResult Update(UpdateTagCommandModel model)
         {
             return UpdateTagCommand.Run(model);
         }
