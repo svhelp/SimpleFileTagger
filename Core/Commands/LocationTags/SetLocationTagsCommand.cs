@@ -15,19 +15,15 @@ namespace Core.Commands.LocationTags
     public class SetLocationTagsCommand : LocationTagsCommandBase<UpdateLocationCommandModel, CommandResultWith<UpdateLocationCommandResultModel>>
     {
         public SetLocationTagsCommand(TaggerContext context, IMapper mapper)
-            : base(context)
+            : base(context, mapper)
         {
-            Mapper = mapper;
         }
-
-        private IMapper Mapper { get; }
 
         public override CommandResultWith<UpdateLocationCommandResultModel> Run(UpdateLocationCommandModel model)
         {
-            var updatedLocation = ProcessLocation(Context, model.Path, location => SetTags(location, model.Tags));
-            var result = Mapper.Map<UpdateLocationCommandResultModel>(updatedLocation);
+            var result = ProcessLocation(model.Path, location => SetTags(location, model.Tags), model.IsRecoursive);
 
-            return GetSuccessfulResult(result);
+            return GetSuccessfulResult(new UpdateLocationCommandResultModel { Locations = result });
         }
 
         private void SetTags(LocationEntity location, string[] tags)

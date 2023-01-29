@@ -11,5 +11,7 @@ namespace Contracts.CommandModels
         public string Path { get; set; }
 
         public string[] Tags { get; set; }
+
+        public bool IsRecoursive { get; set; }
     }
 }

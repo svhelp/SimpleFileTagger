@@ -1,5 +1,7 @@
-﻿using Contracts.CommandModels;
+﻿using AutoMapper;
+using Contracts.CommandModels;
 using Contracts.Models;
+using Contracts.Models.Plain;
 using DAL;
 using DAL.Entities;
 using System;
@@ -12,18 +14,18 @@ using System.Threading.Tasks;
 
 namespace Core.Commands.LocationTags
 {
-    public class RemoveLocationTagCommand : LocationTagsCommandBase<UpdateLocationCommandModel, CommandResult>
+    public class RemoveLocationTagCommand : LocationTagsCommandBase<UpdateLocationCommandModel, CommandResultWith<UpdateLocationCommandResultModel>>
     {
-        public RemoveLocationTagCommand(TaggerContext context)
-            : base(context)
+        public RemoveLocationTagCommand(TaggerContext context, IMapper mapper)
+            : base(context, mapper)
         {
         }
 
-        public override CommandResult Run(UpdateLocationCommandModel model)
+        public override CommandResultWith<UpdateLocationCommandResultModel> Run(UpdateLocationCommandModel model)
         {
-            ProcessLocation(Context, model.Path, location => RemoveTags(location, model.Tags));
+            var result = ProcessLocation(model.Path, location => RemoveTags(location, model.Tags), model.IsRecoursive);
 
-            return GetSuccessfulResult();
+            return GetSuccessfulResult(new UpdateLocationCommandResultModel { Locations = result });
         }
 
         private void RemoveTags(LocationEntity location, string[] tags)

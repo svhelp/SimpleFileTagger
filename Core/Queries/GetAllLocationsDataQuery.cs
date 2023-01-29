@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Contracts.Models;
 using Contracts.Models.Complex;
+using Contracts.Models.Plain;
 using Contracts.QueryModel;
 using DAL;
 using System;
@@ -11,18 +12,18 @@ using System.Threading.Tasks;
 
 namespace Core.Queries
 {
-    public class GetAllLocationsDataQuery : QueryBase<EmptyQueryModel, IEnumerable<LocationModel>>
+    public class GetAllLocationsDataQuery : QueryBase<EmptyQueryModel, IEnumerable<LocationPlainModel>>
     {
         public GetAllLocationsDataQuery(TaggerContext context, IMapper mapper)
             : base(mapper, context)
         {
         }
 
-        public override IEnumerable<LocationModel> Run(EmptyQueryModel model)
+        public override IEnumerable<LocationPlainModel> Run(EmptyQueryModel model)
         {
-            var locations = Context.Locations.Where(l => l.ParentId == null).AsQueryable();
+            var locations = Context.Locations.AsQueryable();
 
-            return Mapper.Map<List<LocationModel>>(locations);
+            return Mapper.Map<List<LocationPlainModel>>(locations);
         }
     }
 }

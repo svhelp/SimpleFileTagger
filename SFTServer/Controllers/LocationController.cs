@@ -1,5 +1,6 @@
 ﻿using Contracts.CommandModels;
 using Contracts.Models.Complex;
+using Contracts.Models.Plain;
 using Contracts.QueryModel;
 using Core.Commands;
 using Core.Commands.Locations;
@@ -41,13 +42,13 @@ namespace SFTServer.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<LocationModel> All()
+        public IEnumerable<LocationPlainModel> All()
         {
             return GetAllLocationsDataQuery.Run(new EmptyQueryModel());
         }
 
         [HttpPost]
-        public CommandResultWith<UpdateLocationCommandResultModel> Create(SimpleNamedModel model)
+        public CommandResultWith<UpdateLocationCommandResultModel> Create(CreateLocationCommandModel model)
         {
             return CreateLocationCommand.Run(model);
         }
@@ -71,15 +72,15 @@ namespace SFTServer.Controllers
         }
 
         [HttpDelete]
-        public CommandResult Remove([FromQuery] Guid id)
+        public CommandResultWith<List<Guid>> Remove(RemoveLocationCommandModel model)
         {
-            return RemoveLocationCommand.Run(id);
+            return RemoveLocationCommand.Run(model);
         }
 
         [HttpPatch]
-        public CommandResult MarkNotFound([FromQuery] List<Guid> locationIds)
+        public CommandResultWith<List<Guid>> MarkNotFound([FromQuery] Guid locationId)
         {
-            return MarkLocationsNotFoundCommand.Run(locationIds);
+            return MarkLocationsNotFoundCommand.Run(locationId);
         }
     }
 }

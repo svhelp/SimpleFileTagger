@@ -13,6 +13,8 @@ namespace Contracts.Models.Plain
 
         public bool NotFound { get; set; }
 
+        public Guid? ParentId { get; set; }
+
         public List<Guid> TagIds { get; set; }
     }
 }

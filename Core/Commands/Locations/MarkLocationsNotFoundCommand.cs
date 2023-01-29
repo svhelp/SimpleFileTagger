@@ -1,4 +1,5 @@
 ﻿using DAL;
+using DAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,25 +8,32 @@ using System.Threading.Tasks;
 
 namespace Core.Commands.Locations
 {
-    public class MarkLocationsNotFoundCommand : CommandBase<List<Guid>, CommandResult>
+    public class MarkLocationsNotFoundCommand : RecoursiveLocationCommandBase<Guid, CommandResultWith<List<Guid>>>
     {
         public MarkLocationsNotFoundCommand(TaggerContext context)
             : base(context)
         {
         }
 
-        public override CommandResult Run(List<Guid> locationIds)
+        public override CommandResultWith<List<Guid>> Run(Guid locationId)
         {
-            var locationsToMark = Context.Locations.Where(l => locationIds.Contains(l.Id)).ToList();
+            var notFoundLocation = Context.Locations.FirstOrDefault(l => l.Id == locationId);
 
-            foreach(var location in locationsToMark)
+            if (notFoundLocation == null)
             {
-                location.NotFound = true;
+                return GetErrorResult("Location not found in the database.");
             }
+
+            var affectedLocationIds = ProcessRecoursively(notFoundLocation, MarkNotFound, new List<Guid>());
 
             Context.SaveChanges();
 
-            return GetSuccessfulResult();
+            return GetSuccessfulResult(affectedLocationIds);
+        }
+
+        private void MarkNotFound(LocationEntity location)
+        {
+            location.NotFound = true;
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.IO;
 using Core.Processors;
 using Core.Constants;
+using Contracts.Models.Plain;
 
 namespace Core.Commands.LocationTags
 {
@@ -16,25 +17,45 @@ namespace Core.Commands.LocationTags
         : CommandBase<T, V>
         where V : CommandResult, new()
     {
-        protected LocationTagsCommandBase(TaggerContext context)
+        protected LocationTagsCommandBase(TaggerContext context, IMapper mapper)
             : base(context)
         {
+            Mapper = mapper;
+            BeaconSettings = context.Settings.FirstOrDefault(s => s.Code == SettingsCodes.Beacons);
         }
 
-        protected static LocationEntity ProcessLocation(TaggerContext context, string path, Action<LocationEntity> processor)
+        private IMapper Mapper { get; }
+
+        private SettingsEntity BeaconSettings { get; }
+
+        protected List<LocationPlainModel> ProcessLocation(string path, Action<LocationEntity> processor, bool isRecoursive)
+        {
+            List<LocationEntity> result;
+
+            if (isRecoursive)
+            {
+                result = ProcessLocationRecoursively(path, processor);
+            } else {
+                var processedLocation = ProcessSingleLocation(path, processor);
+                result = new List<LocationEntity> { processedLocation };
+            }
+
+            return Mapper.Map<List<LocationPlainModel>>(result);
+        }
+
+
+        private LocationEntity ProcessSingleLocation(string path, Action<LocationEntity> processor)
         {
             var beaconFileProcessor = new BeaconFileProcessor(path);
 
             var beaconId = beaconFileProcessor.GetExistingBeacon();
-            var location = GetLocationEntity(context, beaconId, path);
+            var location = GetLocationEntity(beaconId, path);
 
             processor(location);
 
-            context.SaveChanges();
+            Context.SaveChanges();
 
-            var beaconSettings = context.Settings.FirstOrDefault(s => s.Code == SettingsCodes.Beacons);
-
-            if (beaconSettings != null && beaconSettings.Enabled && beaconId == null)
+            if (BeaconSettings != null && BeaconSettings.Enabled && beaconId == null)
             {
                 beaconFileProcessor.CreateBeacon(location);
             }
@@ -42,10 +63,35 @@ namespace Core.Commands.LocationTags
             return location;
         }
 
-        private static LocationEntity GetLocationEntity(TaggerContext context, Guid? beaconId, string path)
+        private List<LocationEntity> ProcessLocationRecoursively(string path, Action<LocationEntity> processor)
+        {
+            var directory = new DirectoryInfo(path);
+
+            if (!directory.Exists)
+            {
+                throw new Exception("Directory does not exist.");
+            }
+
+            return ProcessLocationRecoursively(directory, processor, new List<LocationEntity>());
+        }
+
+        private List<LocationEntity> ProcessLocationRecoursively(DirectoryInfo directory, Action<LocationEntity> processor, List<LocationEntity> result)
+        {
+            var location = ProcessSingleLocation(directory.FullName, processor);
+            result.Add(location);
+
+            foreach (var subDirectory in directory.GetDirectories())
+            {
+                ProcessLocationRecoursively(subDirectory, processor, result);
+            }
+
+            return result;
+        }
+
+        private LocationEntity GetLocationEntity(Guid? beaconId, string path)
         {
             var locationName = Path.GetFileName(path);
-            var locationByPath = context.Locations.FirstOrDefault(l => l.Path == path);
+            var locationByPath = Context.Locations.FirstOrDefault(l => l.Path == path);
 
             if (locationByPath != null)
             {
@@ -54,19 +100,19 @@ namespace Core.Commands.LocationTags
                     return locationByPath;
                 }
 
-                var locationById = GetOrCreateLocationById(context, beaconId, path, locationName);
+                var locationById = GetOrCreateLocationById(beaconId, path, locationName);
 
                 locationByPath.Path = string.Empty;
 
                 return locationById;
             }
 
-            return GetOrCreateLocationById(context, beaconId, path, locationName);
+            return GetOrCreateLocationById(beaconId, path, locationName);
         }
 
-        private static LocationEntity GetOrCreateLocationById(TaggerContext context, Guid? id, string path, string locationName)
+        private LocationEntity GetOrCreateLocationById(Guid? id, string path, string locationName)
         {
-            var locationById = context.Locations.FirstOrDefault(l => l.Id == id);
+            var locationById = Context.Locations.FirstOrDefault(l => l.Id == id);
 
             if (locationById == null)
             {
@@ -80,7 +126,7 @@ namespace Core.Commands.LocationTags
                     locationById.Id = id.Value;
                 }
 
-                context.Locations.Add(locationById);
+                Context.Locations.Add(locationById);
             }
 
             locationById.Path = path;
