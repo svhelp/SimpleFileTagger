@@ -11,5 +11,7 @@ namespace Contracts.CommandModels
     public class UpdateLocationCommandResultModel
     {
         public List<LocationPlainModel> Locations { get; set; }
+
+        public List<TagPlainModel> CreatedTags { get; set; }
     }
 }

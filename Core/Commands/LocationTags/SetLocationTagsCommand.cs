@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Contracts.CommandModels;
+using Contracts.Models.Plain;
 using DAL;
 using DAL.Entities;
 using System;
@@ -21,33 +22,37 @@ namespace Core.Commands.LocationTags
 
         public override CommandResultWith<UpdateLocationCommandResultModel> Run(UpdateLocationCommandModel model)
         {
-            var result = ProcessLocation(model.Path, location => SetTags(location, model.Tags), model.IsRecoursive);
-
-            return GetSuccessfulResult(new UpdateLocationCommandResultModel { Locations = result });
-        }
-
-        private void SetTags(LocationEntity location, string[] tags)
-        {
-            var existingTags = Context.Tags.Where(t => tags.Contains(t.Name)).ToList();
-            var notDuplicatedExistingTags = existingTags.Where(et => !location.Tags.Contains(et)).ToList();
-            var newTags = tags
+            var existingTags = Context.Tags.Where(t => model.Tags.Contains(t.Name)).ToList();
+            var newTags = model.Tags
                 .Where(t => !existingTags.Any(et => et.Name == t))
                 .Select(t => new TagEntity
                 {
                     Name = t,
                 })
                 .ToList();
+            var tagsToAdd = existingTags.Concat(newTags);
 
-            var tagsToRemove = location.Tags.Where(t => !tags.Contains(t.Name));
+            var affectedLocations = ProcessLocation(model.Path, location => SetTags(location, tagsToAdd), model.IsRecoursive);
+            var createdTags = Mapper.Map<List<TagPlainModel>>(newTags);
+
+            return GetSuccessfulResult(new UpdateLocationCommandResultModel
+            {
+                Locations = affectedLocations,
+                CreatedTags = createdTags,
+            });
+        }
+
+        private void SetTags(LocationEntity location, IEnumerable<TagEntity> tags)
+        {
+            var notDuplicatedExistingTags = tags.Where(et => !location.Tags.Contains(et)).ToList();
+            var tagsToRemove = location.Tags.Where(t => !tags.Any(tta => tta.Name == t.Name));
 
             foreach (var tagToRemove in tagsToRemove)
             {
                 location.Tags.Remove(tagToRemove);
             }
 
-            var tagsToAdd = notDuplicatedExistingTags.Concat(newTags);
-
-            foreach (var tag in tagsToAdd)
+            foreach (var tag in notDuplicatedExistingTags)
             {
                 location.Tags.Add(tag);
             }

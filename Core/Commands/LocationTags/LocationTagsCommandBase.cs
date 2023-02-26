@@ -24,9 +24,9 @@ namespace Core.Commands.LocationTags
             BeaconSettings = context.Settings.FirstOrDefault(s => s.Code == SettingsCodes.Beacons);
         }
 
-        private IMapper Mapper { get; }
-
         private SettingsEntity BeaconSettings { get; }
+
+        protected IMapper Mapper { get; }
 
         protected List<LocationPlainModel> ProcessLocation(string path, Action<LocationEntity> processor, bool isRecoursive)
         {

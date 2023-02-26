@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Contracts.CommandModels;
+using Contracts.Models.Plain;
 using DAL;
 using DAL.Entities;
 using System;
@@ -21,26 +22,30 @@ namespace Core.Commands.LocationTags
 
         public override CommandResultWith<UpdateLocationCommandResultModel> Run(UpdateLocationCommandModel model)
         {
-            var result = ProcessLocation(model.Path, location => AddTags(location, model.Tags), model.IsRecoursive);
-
-            return GetSuccessfulResult(new UpdateLocationCommandResultModel { Locations = result });
-        }
-
-        private void AddTags(LocationEntity location, string[] tags)
-        {
-            var existingTags = Context.Tags.Where(t => tags.Contains(t.Name)).ToList();
-            var notDuplicatedExistingTags = existingTags.Where(et => !location.Tags.Contains(et)).ToList();
-            var newTags = tags
+            var existingTags = Context.Tags.Where(t => model.Tags.Contains(t.Name)).ToList();
+            var newTags = model.Tags
                 .Where(t => !existingTags.Any(et => et.Name == t))
                 .Select(t => new TagEntity
                 {
                     Name = t,
                 })
                 .ToList();
+            var tagsToAdd = existingTags.Concat(newTags);
 
-            var tagsToAdd = notDuplicatedExistingTags.Concat(newTags);
+            var affectedLocations = ProcessLocation(model.Path, location => AddTags(location, tagsToAdd), model.IsRecoursive);
+            var createdTags = Mapper.Map<List<TagPlainModel>>(newTags);
 
-            foreach (var tag in tagsToAdd)
+            return GetSuccessfulResult(new UpdateLocationCommandResultModel {
+                Locations = affectedLocations,
+                CreatedTags = createdTags,
+            });
+        }
+
+        private void AddTags(LocationEntity location, IEnumerable<TagEntity> tags)
+        {
+            var notDuplicatedExistingTags = tags.Where(et => !location.Tags.Contains(et)).ToList();
+
+            foreach (var tag in notDuplicatedExistingTags)
             {
                 location.Tags.Add(tag);
             }
