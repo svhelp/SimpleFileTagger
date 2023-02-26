@@ -44,12 +44,12 @@ namespace Core.Commands.LocationTags
         }
 
 
-        private LocationEntity ProcessSingleLocation(string path, Action<LocationEntity> processor)
+        private LocationEntity ProcessSingleLocation(string path, Action<LocationEntity> processor, LocationEntity parent = null)
         {
             var beaconFileProcessor = new BeaconFileProcessor(path);
 
             var beaconId = beaconFileProcessor.GetExistingBeacon();
-            var location = GetLocationEntity(beaconId, path);
+            var location = GetLocationEntity(beaconId, path, parent);
 
             processor(location);
 
@@ -75,20 +75,20 @@ namespace Core.Commands.LocationTags
             return ProcessLocationRecoursively(directory, processor, new List<LocationEntity>());
         }
 
-        private List<LocationEntity> ProcessLocationRecoursively(DirectoryInfo directory, Action<LocationEntity> processor, List<LocationEntity> result)
+        private List<LocationEntity> ProcessLocationRecoursively(DirectoryInfo directory, Action<LocationEntity> processor, List<LocationEntity> result, LocationEntity parent = null)
         {
-            var location = ProcessSingleLocation(directory.FullName, processor);
+            var location = ProcessSingleLocation(directory.FullName, processor, parent);
             result.Add(location);
 
             foreach (var subDirectory in directory.GetDirectories())
             {
-                ProcessLocationRecoursively(subDirectory, processor, result);
+                ProcessLocationRecoursively(subDirectory, processor, result, location);
             }
 
             return result;
         }
 
-        private LocationEntity GetLocationEntity(Guid? beaconId, string path)
+        private LocationEntity GetLocationEntity(Guid? beaconId, string path, LocationEntity parent = null)
         {
             var locationName = Path.GetFileName(path);
             var locationByPath = Context.Locations.FirstOrDefault(l => l.Path == path);
@@ -100,17 +100,17 @@ namespace Core.Commands.LocationTags
                     return locationByPath;
                 }
 
-                var locationById = GetOrCreateLocationById(beaconId, path, locationName);
+                var locationById = GetOrCreateLocationById(beaconId, path, locationName, parent);
 
                 locationByPath.Path = string.Empty;
 
                 return locationById;
             }
 
-            return GetOrCreateLocationById(beaconId, path, locationName);
+            return GetOrCreateLocationById(beaconId, path, locationName, parent);
         }
 
-        private LocationEntity GetOrCreateLocationById(Guid? id, string path, string locationName)
+        private LocationEntity GetOrCreateLocationById(Guid? id, string path, string locationName, LocationEntity parent = null)
         {
             var locationById = Context.Locations.FirstOrDefault(l => l.Id == id);
 
@@ -118,6 +118,7 @@ namespace Core.Commands.LocationTags
             {
                 locationById = new LocationEntity
                 {
+                    Parent = parent,
                     Tags = new List<TagEntity>(),
                 };
 
