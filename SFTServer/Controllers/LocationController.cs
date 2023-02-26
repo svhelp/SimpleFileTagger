@@ -66,7 +66,7 @@ namespace SFTServer.Controllers
         }
 
         [HttpPut]
-        public CommandResult RemoveTags(UpdateLocationCommandModel model)
+        public CommandResultWith<UpdateLocationCommandResultModel> RemoveTags(UpdateLocationCommandModel model)
         {
             return RemoveLocationTagCommand.Run(model);
         }
