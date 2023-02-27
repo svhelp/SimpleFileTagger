@@ -32,15 +32,41 @@ namespace Core.Commands.LocationTags
         {
             List<LocationEntity> result;
 
+            var directory = new DirectoryInfo(path);
+
+            if (!directory.Exists)
+            {
+                throw new Exception("Directory does not exist.");
+            }
+
+            var possibleParent = Context.Locations
+                .Where(l => path.StartsWith(l.Path))
+                .ToList()
+                .OrderBy(l => Path.GetFullPath(l.Path).Split(Path.DirectorySeparatorChar).Length)
+                .LastOrDefault();
+
             if (isRecoursive)
             {
-                result = ProcessLocationRecoursively(path, processor);
+                result = ProcessLocationRecoursively(directory, processor, new List<LocationEntity>(), possibleParent);
             } else {
-                var processedLocation = ProcessSingleLocation(path, processor);
+                var processedLocation = ProcessSingleLocation(path, processor, possibleParent);
                 result = new List<LocationEntity> { processedLocation };
             }
 
             return Mapper.Map<List<LocationPlainModel>>(result);
+        }
+
+        private List<LocationEntity> ProcessLocationRecoursively(DirectoryInfo directory, Action<LocationEntity> processor, List<LocationEntity> result, LocationEntity parent = null)
+        {
+            var location = ProcessSingleLocation(directory.FullName, processor, parent);
+            result.Add(location);
+
+            foreach (var subDirectory in directory.GetDirectories())
+            {
+                ProcessLocationRecoursively(subDirectory, processor, result, location);
+            }
+
+            return result;
         }
 
 
@@ -61,31 +87,6 @@ namespace Core.Commands.LocationTags
             }
 
             return location;
-        }
-
-        private List<LocationEntity> ProcessLocationRecoursively(string path, Action<LocationEntity> processor)
-        {
-            var directory = new DirectoryInfo(path);
-
-            if (!directory.Exists)
-            {
-                throw new Exception("Directory does not exist.");
-            }
-
-            return ProcessLocationRecoursively(directory, processor, new List<LocationEntity>());
-        }
-
-        private List<LocationEntity> ProcessLocationRecoursively(DirectoryInfo directory, Action<LocationEntity> processor, List<LocationEntity> result, LocationEntity parent = null)
-        {
-            var location = ProcessSingleLocation(directory.FullName, processor, parent);
-            result.Add(location);
-
-            foreach (var subDirectory in directory.GetDirectories())
-            {
-                ProcessLocationRecoursively(subDirectory, processor, result, location);
-            }
-
-            return result;
         }
 
         private LocationEntity GetLocationEntity(Guid? beaconId, string path, LocationEntity parent = null)
@@ -116,9 +117,13 @@ namespace Core.Commands.LocationTags
 
             if (locationById == null)
             {
+                //TODO: finish children insertion
+                //var children = parent.Children.Where(l => l.Path.StartsWith(path)).ToList();
+
                 locationById = new LocationEntity
                 {
                     Parent = parent,
+                    //Children = children,
                     Tags = new List<TagEntity>(),
                 };
 

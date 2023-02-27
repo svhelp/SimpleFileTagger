@@ -72,7 +72,7 @@ namespace SFTServer.Controllers
         }
 
         [HttpDelete]
-        public CommandResultWith<List<Guid>> Remove(RemoveLocationCommandModel model)
+        public CommandResultWith<RemoveLocationCommandResultModel> Remove(RemoveLocationCommandModel model)
         {
             return RemoveLocationCommand.Run(model);
         }
