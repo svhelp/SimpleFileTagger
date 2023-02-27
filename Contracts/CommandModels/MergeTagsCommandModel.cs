@@ -8,6 +8,8 @@ namespace Contracts.CommandModels
 {
     public class MergeTagsCommandModel
     {
+        public Guid MainTagId { get; set; }
+
         public List<Guid> TagIds { get; set; }
     }
 }

@@ -8,43 +8,44 @@ using System.Threading.Tasks;
 
 namespace Core.Commands.Tags
 {
-    public class MergeTagsCommand : CommandBase<MergeTagsCommandModel, CommandResultWith<Guid>>
+    public class MergeTagsCommand : CommandBase<MergeTagsCommandModel, CommandResult>
     {
         public MergeTagsCommand(TaggerContext Context)
             : base(Context)
         {
         }
 
-        public override CommandResultWith<Guid> Run(MergeTagsCommandModel model)
+        public override CommandResult Run(MergeTagsCommandModel model)
         {
             if (model.TagIds.Count < 2)
             {
                 return GetErrorResult("Not enough tags for merge.");
             }
 
-            var tagsToMerge = Context.Tags.Where(t => model.TagIds.Contains(t.Id)).ToList();
+            var mainTag = Context.Tags.FirstOrDefault(t => t.Id == model.MainTagId);
 
-            var tagGroups = tagsToMerge.Select(t => t.GroupId).Distinct();
-
-            if (tagGroups.Count() > 1)
+            if (mainTag == null)
             {
-                return GetErrorResult("Impossible to merge tags with different groups.");
+                return GetErrorResult("Main tag not found.");
             }
 
-            var firstTag = tagsToMerge.First();
+            var tagsIdsToRemove = model.TagIds.Where(id => id != model.MainTagId).ToList();
+            var tagsToMerge = Context.Tags.Where(t => tagsIdsToRemove.Contains(t.Id)).ToList();
 
             foreach (var tag in tagsToMerge)
             {
                 foreach (var location in tag.Locations)
                 {
                     location.Tags.Remove(tag);
-                    location.Tags.Add(firstTag);
+                    location.Tags.Add(mainTag);
                 }
+
+                Context.Remove(tag);
             }
 
             Context.SaveChanges();
 
-            return GetSuccessfulResult(firstTag.Id);
+            return GetSuccessfulResult();
         }
     }
 }
