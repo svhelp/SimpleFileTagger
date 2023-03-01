@@ -31,6 +31,7 @@ namespace Core.Commands.Locations
 
             if (model.IsRecoursive)
             {
+                result.OrphansParent = location.Parent?.Id;
                 result.RemovedLocationIds = ProcessRecoursively(location, RemoveLocation, new List<Guid>());
             }
             else

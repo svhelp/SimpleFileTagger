@@ -10,6 +10,6 @@ namespace Contracts.CommandModels
     {
         public List<Guid> RemovedLocationIds { get; set; }
 
-        public Guid OrphansParent { get; set; }
+        public Guid? OrphansParent { get; set; }
     }
 }
